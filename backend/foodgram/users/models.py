@@ -1,65 +1,71 @@
-from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractUser
 from django.db import models
-
-
-class CustomUserManager(BaseUserManager):
-    def create_user(self, username, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('The Email field must be set')
-        email = self.normalize_email(email)
-        user = self.model(username=username, email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, username, email, password=None, **extra_fields):
-        if password is None:
-            raise ValueError('The Password field must be set')
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('role', 'admin')
-        return self.create_user(username, email, password, **extra_fields)
+from django.contrib.auth.models import AbstractUser
+from django.core.validators import EmailValidator
+from recipes.models import Recipe
 
 
 class User(AbstractUser):
-    objects = CustomUserManager()
+    email = models.CharField(
+        max_length=254,
+        validators=[EmailValidator],
+        blank=False,
+        verbose_name='Email'
+    )
+    first_name = models.CharField(
+        max_length=150,
+        blank=False,
+        verbose_name='Имя'
+    )
+    last_name = models.CharField(
+        max_length=150,
+        blank=False,
+        verbose_name='Фамилия'
+    )
+    # favorites = models.ForeignKey(
+    #     Recipe,
+    #     related_name='in_favorites',
+    #     verbose_name='Избранное',
+    # )
 
-    USER_ROLE = 'user'
-    MODERATOR_ROLE = 'moderator'
-    ADMIN_ROLE = 'admin'
 
-    ROLE_CHOICES = [
-        (USER_ROLE, 'user'),
-        (MODERATOR_ROLE, 'moderator'),
-        (ADMIN_ROLE, 'admin'),
-    ]
-
-    role = models.CharField(
-        max_length=20,
-        choices=ROLE_CHOICES,
-        default=USER_ROLE,
+class UsersSubscribes(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.DO_NOTHING,
+        related_name='user',
+        verbose_name='Пользователь',
+    )
+    subscribes = models.ManyToManyField(
+        User,
+        related_name='subscribes',
+        verbose_name='Подписки',
     )
 
-    confirmation_code = models.CharField(max_length=6, default='', blank=True)
-
-    bio = models.TextField(blank=True)
-
     class Meta:
-        swappable = 'AUTH_USER_MODEL'
-        ordering = ['username']
+        unique_together = ('user', 'subscribes')
 
-    @property
-    def is_user(self):
-        return self.role == self.USER_ROLE
 
-    @property
-    def is_moderator(self):
-        return self.role == self.MODERATOR_ROLE
+class Favorites(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.DO_NOTHING,
+        related_name='favorited',
+        verbose_name='Пользователь',
+    )
+    favorite_recipes = models.ManyToManyField(
+        Recipe,
+        related_name='favorite_in',
+        verbose_name='Избранное',
+    )
+    
 
-    @property
-    def is_admin(self):
-        return self.role == self.ADMIN_ROLE
+#     class Meta:
+#         verbose_name = _("favorite")
+#         verbose_name_plural = _("favorites")
 
-    def __str__(self):
-        return self.username
+#     def __str__(self):
+#         return self.name
+
+#     def get_absolute_url(self):
+#         return reverse("favorite_detail", kwargs={"pk": self.pk})
+# )
