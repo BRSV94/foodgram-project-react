@@ -1,15 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import EmailValidator
-from recipes.models import Recipe
 
 
 class User(AbstractUser):
-    email = models.CharField(
+    email = models.EmailField(
         max_length=254,
-        validators=[EmailValidator],
         blank=False,
-        verbose_name='Email'
+        verbose_name='Email',
+        unique=True,
     )
     first_name = models.CharField(
         max_length=150,
@@ -21,51 +20,64 @@ class User(AbstractUser):
         blank=False,
         verbose_name='Фамилия'
     )
-    # favorites = models.ForeignKey(
-    #     Recipe,
-    #     related_name='in_favorites',
-    #     verbose_name='Избранное',
-    # )
+
+    def __str__(self) -> str:
+        return f'{self.first_name} {self.last_name}'
 
 
 class UsersSubscribes(models.Model):
     user = models.ForeignKey(
         User,
-        on_delete=models.DO_NOTHING,
-        related_name='user',
+        on_delete=models.CASCADE,
+        related_name='subscriber', # Ругается не на это?
         verbose_name='Пользователь',
     )
     subscribes = models.ManyToManyField(
         User,
         related_name='subscribes',
         verbose_name='Подписки',
+        blank=True,
     )
-
+    
     class Meta:
-        unique_together = ('user', 'subscribes')
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
 
 
-class Favorites(models.Model):
+
+class Favorited(models.Model):
     user = models.ForeignKey(
         User,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         related_name='favorited',
         verbose_name='Пользователь',
     )
-    favorite_recipes = models.ManyToManyField(
-        Recipe,
+    recipes = models.ManyToManyField(
+        'recipes.Recipe',
         related_name='favorite_in',
-        verbose_name='Избранное',
+        verbose_name='Рецепты',
+        blank=True
     )
-    
 
-#     class Meta:
-#         verbose_name = _("favorite")
-#         verbose_name_plural = _("favorites")
+    class Meta:
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
 
-#     def __str__(self):
-#         return self.name
 
-#     def get_absolute_url(self):
-#         return reverse("favorite_detail", kwargs={"pk": self.pk})
-# )
+class ShoppingCart(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='shopping_cart',
+        verbose_name='Пользователь',
+    )
+    recipes = models.ManyToManyField(
+        'recipes.Recipe',
+        related_name='in_shopping_cart',
+        verbose_name='Рецепты',
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = 'Список покупок'
+        verbose_name_plural = 'Список покупок'
