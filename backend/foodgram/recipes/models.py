@@ -1,11 +1,11 @@
-from django.db import models
-from django.core.validators import RegexValidator, MinValueValidator
-from django.contrib.auth import get_user_model
 from django.contrib import admin
-# from .utils import PositiveAmountValidator
-from .validators import tags_validator
+from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, RegexValidator
+from django.db import models
 from rest_framework.validators import UniqueValidator
 
+# from .utils import PositiveAmountValidator
+from .validators import tags_validator
 
 User = get_user_model()
 

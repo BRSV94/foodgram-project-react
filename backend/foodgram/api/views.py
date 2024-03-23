@@ -1,21 +1,24 @@
-from rest_framework.response import Response
-from rest_framework.permissions import (SAFE_METHODS, IsAuthenticated)
-from rest_framework import (filters, status, viewsets,
-                            mixins, permissions, generics)
-from rest_framework.filters import SearchFilter
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from recipes.models import Tag, Ingredient, Recipe, IngredientInRecipe
-from users.models import User, Favorited, UsersSubscribes, ShoppingCart
+from djoser.views import UserViewSet
+from recipes.filters import IngredientFilter, RecipeFilter
+from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
+from recipes.permissions import IsAuthorOrReadOnly
+from rest_framework import (filters, generics, mixins, permissions, status,
+                            viewsets)
+from rest_framework.filters import SearchFilter
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
+from rest_framework.response import Response
+from users.models import Favorited, ShoppingCart, User, UsersSubscribes
 from users.permissions import IsOwnerProfile
-from .serializers import (RecipeSerializer, TagSerializer, SubRecipeSerializer,
-                          IngredientSerializer, SubscribesSerializer,
-                          FavoritedSerializer, IngredientInRecipeSerializer)
+
+from .serializers import (FavoritedSerializer, IngredientInRecipeSerializer,
+                          IngredientSerializer, RecipeSerializer,
+                          SubRecipeSerializer, SubscribesSerializer,
+                          TagSerializer)
+
                         #   ChangePasswordSerializer,
                         #   UserSerializer,
-from recipes.filters import RecipeFilter, IngredientFilter
-from recipes.permissions import IsAuthorOrReadOnly
-from django.shortcuts import get_object_or_404
-from djoser.views import UserViewSet
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

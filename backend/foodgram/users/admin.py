@@ -1,7 +1,7 @@
-from django.contrib.auth.admin import UserAdmin
 from django.contrib import admin
-from .models import (User, UsersSubscribes,
-                     Favorited, ShoppingCart)
+from django.contrib.auth.admin import UserAdmin
+
+from .models import Favorited, ShoppingCart, User, UsersSubscribes
 
 
 @admin.register(User)
