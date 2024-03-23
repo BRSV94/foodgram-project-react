@@ -121,7 +121,7 @@ class SubscribesViewSet(mixins.CreateModelMixin,
         user_for_subscribe = get_object_or_404(User, id=subscribe_id)
         obj, create = UsersSubscribes.objects.get_or_create(user=request.user)
 
-        if subscribe_id == request.user.id:
+        if int(subscribe_id) == request.user.id:
             return Response(f'Нельзя подписаться на себя.',
                             status=status.HTTP_400_BAD_REQUEST)
 
@@ -131,16 +131,23 @@ class SubscribesViewSet(mixins.CreateModelMixin,
         ).exists():
             return Response(f'Вы уже подписаны на {user_for_subscribe}.',
                             status=status.HTTP_400_BAD_REQUEST)
-        query_params = self.request.query_params
-        print("LSOSOOSOLLOSOSOSOSSO")
-        print(query_params)
+        # query_params = self.request.query_params
 
         obj.subscribes.add(user_for_subscribe)
         data = SubscribesSerializer(instance=user_for_subscribe).data
-        serializer = SubscribesSerializer(instance=user_for_subscribe, data=data)
-        serializer.is_valid(raise_exception=True)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+        if request.query_params:
+            recipes_limit = int(self.request.query_params['recipes_limit'])
+            data['recipes'] = data['recipes'][:recipes_limit]
+        # print(data)
+
+        # serializer = SubscribesSerializer(instance=user_for_subscribe, data=data)
+        # serializer.is_valid(raise_exception=True)
+        # print('LOSOSOSOSOSOS')
+        # print(serializer.data)
+        headers = self.get_success_headers(data)
+            # serializer.data)
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
     
     def destroy(self, request, *args, **kwargs):
         unsubscribe_id = self.kwargs.get('id')

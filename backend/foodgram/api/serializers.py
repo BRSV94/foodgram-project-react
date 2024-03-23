@@ -1,6 +1,6 @@
 import base64
 import webcolors
-from rest_framework.serializers import (Serializer, ModelSerializer,
+from rest_framework.serializers import (ListSerializer, ModelSerializer,
                                         SerializerMethodField,
                                         PrimaryKeyRelatedField,
                                         ImageField, Field, ValidationError,
@@ -156,14 +156,13 @@ class FavoritedSerializer(ModelSerializer):
 
 
 class SubRecipeSerializer(ModelSerializer):
-    
 
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
 
 class SubscribesSerializer(UserSerializer):
-    recipes = SubRecipeSerializer(read_only=True, many=True,)
+    recipes = SubRecipeSerializer(read_only=True, many=True)
     recipes_count = SerializerMethodField()
 
     class Meta:
@@ -172,21 +171,16 @@ class SubscribesSerializer(UserSerializer):
                   'last_name', 'is_subscribed', 'recipes',
                   'recipes_count',)
         read_only_fields = ('email', 'id', 'username', 'first_name',
-                  'last_name', 'is_subscribed', 'recipes',
-                  'recipes_count',)
+                            'last_name', 'is_subscribed', 'recipes',
+                            'recipes_count')
         depth = 1
 
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
     
-    
-    # def validate_username(self, value):
-    #     return value
-
-    # def validate_email(self, value):
-    #     return value
-        
-
-
-
+    # def validate_recipes(self, queryset):
+    #     recipes_limit = int(self.context['request'].query_params['recipes_limit'])
+    #     print(recipes_limit)
+    #     print(queryset[:recipes_limit])
+    #     return queryset[:recipes_limit]
