@@ -12,13 +12,12 @@ from rest_framework.response import Response
 from users.models import Favorited, ShoppingCart, User, UsersSubscribes
 from users.permissions import IsOwnerProfile
 
-from .serializers import (FavoritedSerializer, IngredientInRecipeSerializer,
-                          IngredientSerializer, RecipeSerializer,
-                          SubRecipeSerializer, SubscribesSerializer,
-                          TagSerializer)
-
-                        #   ChangePasswordSerializer,
-                        #   UserSerializer,
+from .serializers import (
+    FavoritedSerializer, IngredientInRecipeSerializer,
+    IngredientSerializer, RecipeSerializer,
+    SubRecipeSerializer, SubscribesSerializer,
+    TagSerializer,
+)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -74,14 +73,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    # def validate_amount(value):
-    #     return value > 0
-    
-    # def update(self, request, *args, **kwargs):
-    #     recipe_id = self.kwargs.get('recipe_id')
-
-    #     return super().update(request, *args, **kwargs)
-
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
@@ -102,7 +93,6 @@ class SubscribesViewSet(mixins.CreateModelMixin,
                         viewsets.GenericViewSet):
     serializer_class = SubscribesSerializer
     permission_classes = (IsOwnerProfile,)
-    # pagination_class = SubscribesPagination
 
     def get_queryset(self):
         current_user = self.request.user
@@ -134,7 +124,6 @@ class SubscribesViewSet(mixins.CreateModelMixin,
         ).exists():
             return Response(f'Вы уже подписаны на {user_for_subscribe}.',
                             status=status.HTTP_400_BAD_REQUEST)
-        # query_params = self.request.query_params
 
         obj.subscribes.add(user_for_subscribe)
         data = SubscribesSerializer(instance=user_for_subscribe).data
@@ -142,14 +131,8 @@ class SubscribesViewSet(mixins.CreateModelMixin,
         if request.query_params:
             recipes_limit = int(self.request.query_params['recipes_limit'])
             data['recipes'] = data['recipes'][:recipes_limit]
-        # print(data)
 
-        # serializer = SubscribesSerializer(instance=user_for_subscribe, data=data)
-        # serializer.is_valid(raise_exception=True)
-        # print('LOSOSOSOSOSOS')
-        # print(serializer.data)
         headers = self.get_success_headers(data)
-            # serializer.data)
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
     
     def destroy(self, request, *args, **kwargs):

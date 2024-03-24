@@ -1,19 +1,18 @@
 import base64
 
 import webcolors
-from django.contrib.auth.hashers import make_password
 from django.core.files.base import ContentFile
-from django.db.models import Count
-from django.shortcuts import get_object_or_404
-from recipes.models import (Ingredient, IngredientInRecipe, MeasurementUnit,
-                            Recipe, Tag)
+from recipes.models import (
+    Ingredient, IngredientInRecipe,
+    Recipe, Tag,
+)
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import (CharField, Field, ImageField,
-                                        ListSerializer, ModelSerializer,
-                                        PrimaryKeyRelatedField, RelatedField,
-                                        SerializerMethodField,
-                                        StringRelatedField, ValidationError)
-from users.models import Favorited, User, UsersSubscribes
+from rest_framework.serializers import (
+    Field, ImageField, ModelSerializer,
+    PrimaryKeyRelatedField,
+    SerializerMethodField, ValidationError,
+)
+from users.models import User, UsersSubscribes
 
 
 class Base64ImageField(ImageField):
@@ -51,7 +50,6 @@ class UserSerializer(ModelSerializer):
         current_user = self.context.get('request').user
         return UsersSubscribes.objects.filter(
             user=current_user.id, subscribes=user).exists()
-            # user=current_user).exists()
 
     class Meta:
         model = User
@@ -146,20 +144,13 @@ class FavoritedSerializer(ModelSerializer):
         fields = ('id', 'name', 'image', 'cooking_time',)
         read_only_fields = ('id', 'name', 'image', 'cooking_time',)
 
-    # def create(self, validated_data):
-    #     user = self.context.get('request').user
-    #     recipe_id = self.context.get('view').kwargs.get('recipe_id') # View?
-    #     recipe = get_object_or_404(Recipe, id=recipe_id)
-    #     obj, create = Favorited.objects.get_or_create(user=user)
-    #     obj.recipes.add(recipe)
-    #     return recipe
-
 
 class SubRecipeSerializer(ModelSerializer):
 
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
+
 
 class SubscribesSerializer(UserSerializer):
     recipes = SubRecipeSerializer(read_only=True, many=True)
@@ -178,9 +169,3 @@ class SubscribesSerializer(UserSerializer):
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
-    
-    # def validate_recipes(self, queryset):
-    #     recipes_limit = int(self.context['request'].query_params['recipes_limit'])
-    #     print(recipes_limit)
-    #     print(queryset[:recipes_limit])
-    #     return queryset[:recipes_limit]

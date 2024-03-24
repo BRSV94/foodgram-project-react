@@ -1,5 +1,6 @@
-from rest_framework.permissions import (SAFE_METHODS, BasePermission,
-                                        IsAuthenticated)
+from rest_framework.permissions import (
+    SAFE_METHODS, BasePermission, IsAuthenticated
+)
 
 
 class IsOwnerProfile(IsAuthenticated):
@@ -10,5 +11,5 @@ class IsOwnerProfile(IsAuthenticated):
 
 class IsAuthenticatedOrNotMe(BasePermission):
     def has_permission(self, request, view):
-        return (not 'me' in request.META['PATH_INFO']
+        return (not 'users/me' in request.META['PATH_INFO']
                 or request.user.is_authenticated)

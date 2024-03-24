@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import EmailValidator
 from django.db import models
 
 
@@ -29,7 +28,7 @@ class UsersSubscribes(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='subscriber', # Ругается не на это?
+        related_name='subscriber',
         verbose_name='Пользователь',
     )
     subscribes = models.ManyToManyField(
