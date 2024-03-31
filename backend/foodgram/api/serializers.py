@@ -2,6 +2,7 @@ import base64
 
 import webcolors
 from django.core.files.base import ContentFile
+from django.contrib.auth.hashers import make_password
 from recipes.models import (
     Ingredient, IngredientInRecipe,
     Recipe, Tag,
@@ -58,12 +59,18 @@ class UserSerializer(ModelSerializer):
         read_only_fields = ('id',)
 
 class UserCreateSerializer(ModelSerializer):
+
+    def create(self, validated_data):
+        validated_data['password'] = make_password(validated_data['password'])
+        return super().create(validated_data)
     
     class Meta:
         model = User
         fields = ('email', 'id', 'username',
                   'first_name', 'last_name', 'password')
         read_only_fields = ('id', 'is_subscribed')
+        extra_kwargs = {'password': {'write_only': True}}
+
 
 
 class TagSerializer(ModelSerializer):

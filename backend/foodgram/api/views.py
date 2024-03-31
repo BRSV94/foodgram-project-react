@@ -1,16 +1,18 @@
+from aspose import pdf
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from djoser.views import UserViewSet
-from recipes.filters import IngredientFilter, RecipeFilter
+from recipes.filters import RecipeFilter
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from recipes.permissions import IsAuthorOrReadOnly
-from rest_framework import (filters, generics, mixins, permissions, status,
-                            viewsets)
+from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
 from users.models import Favorited, ShoppingCart, User, UsersSubscribes
 from users.permissions import IsOwnerProfile
+from users.utils import create_shopping_cart
 
 from .serializers import (
     FavoritedSerializer, IngredientInRecipeSerializer,
@@ -72,6 +74,21 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+    @action(
+        detail=False,
+        permission_classes=(IsAuthenticated,)
+    )
+    def download_shopping_cart(self, request):
+        user = request.user
+        if not user.shopping_cart.exists():
+            return Response("Ваш список покупок пуст",
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        shopping_list_pdf, pdf_name = create_shopping_cart(request)
+        response = HttpResponse(shopping_list_pdf, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename={pdf_name}'
+        return response
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -191,6 +208,8 @@ class FavoritedViewSet(mixins.CreateModelMixin,
 
 class ShoppingCartViewSet(mixins.CreateModelMixin,
                           mixins.DestroyModelMixin,
+                          mixins.ListModelMixin,
+                          mixins.RetrieveModelMixin,
                           viewsets.GenericViewSet):
     permission_classes = (IsAuthenticated,)
     serializer_class = SubRecipeSerializer
@@ -228,7 +247,3 @@ class ShoppingCartViewSet(mixins.CreateModelMixin,
 
         cart.recipes.remove(recipe)
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class DownloadShoppingCartViewSet(viewsets.ViewSetMixin):
-    pass
