@@ -51,9 +51,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         serializer.data['ingredients'] = []
         recipe = Recipe.objects.get(id=serializer.data['id'])
-
-        for ingredient_data in ingredients:
-            try:
+        if ingredients:
+            for ingredient_data in ingredients:
                 ingredient = Ingredient.objects.get(id=ingredient_data['id'])
                 if ingredient_data['amount'] < 1:
                     return Response("Кол-во ингредиента не может быть меньше 1.",
@@ -65,12 +64,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 )
                 to_ingredients = IngredientInRecipeSerializer(instance=saved_ingredient).data
                 serializer.data['ingredients'].append(to_ingredients)
-            except:
-                    return Response("Некорректные данные ингредиентов или тэгов.",
+                headers = self.get_success_headers(serializer.data)
+                return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+                
+        return Response("Некорректные данные ингредиентов или тэгов.",
                                     status=status.HTTP_400_BAD_REQUEST)
-            
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
