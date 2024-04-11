@@ -42,6 +42,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if not ingredients:
             return Response("Необходимо указать ингредиенты.",
                             status=status.HTTP_400_BAD_REQUEST)
+        ing_ids = []
+        for ingredient in ingredients:
+            if ingredient['id'] in ing_ids:
+                return Response("Ингредиенты не могут повторяться.",
+                            status=status.HTTP_400_BAD_REQUEST)
+            ing_ids.append(ingredient['id'])
+        ing_ids.clear()
+        
         tags = serializer.initial_data.get('tags', None)
         if tags and len(tags) != len(set(tags)):
             return Response("Тэги не могут повторяться.",
@@ -53,8 +61,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = Recipe.objects.get(id=serializer.data['id'])
         if ingredients:
             for ingredient_data in ingredients:
+                ing_exists = Ingredient.objects.filter(id=ingredient_data['id']).exists()
+                if not ing_exists:
+                    recipe.delete()
+                    break
                 ingredient = Ingredient.objects.get(id=ingredient_data['id'])
-                if ingredient_data['amount'] < 1:
+                if int(ingredient_data['amount']) < 1:
+                    recipe.delete()
                     return Response("Кол-во ингредиента не может быть меньше 1.",
                                     status=status.HTTP_400_BAD_REQUEST)
                 saved_ingredient = IngredientInRecipe.objects.create(
@@ -74,7 +87,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
     @action(
-        detail=False,
+        detail=True, # False
         permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
@@ -105,6 +118,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 class SubscribesViewSet(mixins.CreateModelMixin,
                         mixins.ListModelMixin,
+                        mixins.DestroyModelMixin,
                         viewsets.GenericViewSet):
     serializer_class = SubscribesSerializer
     permission_classes = (IsOwnerProfile,)
@@ -167,9 +181,17 @@ class SubscribesViewSet(mixins.CreateModelMixin,
 
 
 class FavoritedViewSet(mixins.CreateModelMixin,
+                       mixins.ListModelMixin,
+                       mixins.DestroyModelMixin,
                        viewsets.GenericViewSet):
     serializer_class = FavoritedSerializer
     permission_classes = (IsOwnerProfile,)
+    http_method_names = ['get', 'post', 'delete']
+
+    def get_queryset(self):
+        # queryset = Recipe.objects.filter(favorited__user=self.request.user)
+        queryset = Recipe.favorite_in.filter(user=self.request.user)
+        return queryset
 
     def create(self, request, *args, **kwargs):
         recipe_id = self.kwargs.get('recipe_id')
@@ -202,6 +224,10 @@ class FavoritedViewSet(mixins.CreateModelMixin,
         ).exists():
             return Response('Рецепт не находится в избраноом.',
                             status=status.HTTP_400_BAD_REQUEST)
+        
+        obj = Favorited.objects.get(user=request.user)
+        obj.recipes.remove(remove_recipe)
+        return Response(status=status.HTTP_200_OK)
 
 
 class ShoppingCartViewSet(mixins.CreateModelMixin,
@@ -226,7 +252,6 @@ class ShoppingCartViewSet(mixins.CreateModelMixin,
 
         data = SubRecipeSerializer(instance=recipe).data
         serializer = self.get_serializer(data=data)
-        print(serializer.initial_data)
         headers = self.get_success_headers(serializer.initial_data)
 
         cart.recipes.add(recipe)
