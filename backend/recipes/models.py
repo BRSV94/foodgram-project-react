@@ -65,6 +65,7 @@ class Ingredient(models.Model):
         MeasurementUnit,
         on_delete=models.CASCADE,
         related_name='ingredients',
+        # default='шт.'
     )
 
     class Meta:
@@ -98,11 +99,17 @@ class Recipe(models.Model):
     text = models.TextField(
         verbose_name='Описание',
     )
+    # ingredients = models.ManyToManyField(
+    #     Ingredient,
+    #     through='IngredientInRecipe',
+    #     related_name='recipes',
+    #     verbose_name='Ингридиенты',
+    #     blank=True,
+    # )
     ingredients = models.ManyToManyField(
-        Ingredient,
-        through='IngredientInRecipe',
+        'IngredientInRecipe',
         related_name='recipes',
-        verbose_name='Ингридиенты',
+        verbose_name='Ингредиенты',
         blank=True,
     )
     tags = models.ManyToManyField(
@@ -129,11 +136,11 @@ class Recipe(models.Model):
 
 
 class IngredientInRecipe(models.Model):
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='ingredient_in_recipe',
-    )
+    # recipe = models.ForeignKey(
+    #     Recipe,
+    #     on_delete=models.CASCADE,
+    #     related_name='ingredient_in_recipe',
+    # )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
@@ -147,12 +154,12 @@ class IngredientInRecipe(models.Model):
         verbose_name = 'ингредиент в рецепте'
         verbose_name_plural = 'Ингредиенты в рецепте'
         ordering = ['ingredient']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['recipe', 'ingredient'],
-                name='unique_recipe_ingredient'
-            )
-        ]
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=['recipe', 'ingredient'],
+        #         name='unique_recipe_ingredient'
+        #     )
+        # ]
 
     def __str__(self):
         return f'{self.ingredient} - {self.amount}'

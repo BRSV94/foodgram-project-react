@@ -10,9 +10,16 @@ class TagsInline(admin.TabularInline):
     model = Tag
 
 
+class IngredientInline(admin.TabularInline):
+    model = Ingredient
+
+
 class IngredientInRecipeInline(admin.TabularInline):
     model = IngredientInRecipe
     extra = 1
+    inlines = (
+        IngredientInline,
+    )
 
 
 @admin.register(Recipe)
@@ -30,9 +37,9 @@ class RecipeAdmin(admin.ModelAdmin):
     filter_horizontal = (
         'tags',
     )
-    inlines = (
-        IngredientInRecipeInline,
-    )
+    # inlines = (
+    #     IngredientInRecipeInline,
+    # )
 
 
 @admin.register(Ingredient)
@@ -79,12 +86,3 @@ class MeasurementUnitAdmin(admin.ModelAdmin):
     list_filter = (
         'measurement_unit',
     )
-
-
-class TagsInline(admin.TabularInline):
-    model = Tag
-
-
-class IngredientInRecipeInline(admin.TabularInline):
-    model = IngredientInRecipe
-    extra = 1
