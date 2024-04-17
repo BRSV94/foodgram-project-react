@@ -7,7 +7,7 @@ from recipes.models import (
     Ingredient, IngredientInRecipe,
     Recipe, Tag,
 )
-from recipes.utils import recipe_bind_ingredients_and_tags
+from recipes.utils import recipe_create_or_update
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
     CharField, Field, ImageField, IntegerField,
@@ -168,7 +168,7 @@ class RecipeSerializer(ModelSerializer):
         read_only_fields = ('id', 'author', 'is_favorited', 'is_in_shopping_cart',)
 
     def create(self, validated_data):
-        recipe = recipe_bind_ingredients_and_tags(
+        recipe = recipe_create_or_update(
             self,
             validated_data,
             None
@@ -192,7 +192,7 @@ class RecipeSerializer(ModelSerializer):
         return recipe
     
     def update(self, instance, validated_data):
-        update_recipe =  recipe_bind_ingredients_and_tags(
+        update_recipe = recipe_create_or_update(
             self,
             validated_data,
             instance
@@ -272,7 +272,7 @@ class SubscribesSerializer(UserSerializer):
     recipes = SubRecipeSerializer(
         read_only=True,
         many=True,     
-        )
+    )
     recipes_count = SerializerMethodField()
 
     class Meta:
@@ -285,15 +285,12 @@ class SubscribesSerializer(UserSerializer):
                             'recipes_count')
         depth = 1
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        request = self.context.get('request', None)
-        if request:
-            limit = request.query_params.get('recipes_limit', None)
-            if limit:
-                data['recipes'] = data['recipes'][:int(limit)]
-        
-        return data
+    # def __init__(self, *args, **kwargs):
+    #     recipe_limit = kwargs.pop('recipe_limit', None)
+    #     super().__init__(*args, **kwargs)
+
+    #     if recipe_limit:
+    #         self.fields['ingredients'].max_length = recipe_limit
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()

@@ -49,7 +49,7 @@ class CustomUserViewSet(UserViewSet):
         obj, create = UsersSubscribes.objects.get_or_create(
             user=user
         )
-        queryset =obj.subscribes.all()
+        queryset = obj.subscribes.all()
         pages = self.paginate_queryset(queryset)
         serializer = SubscribesSerializer(
             pages,
@@ -149,6 +149,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         shopping_list_pdf, pdf_name = create_shopping_cart(request)
         response = HttpResponse(shopping_list_pdf, content_type='application/pdf')
+        # response = HttpResponse(shopping_list_pdf, content_type='text/plain')
         response['Content-Disposition'] = f'attachment; filename={pdf_name}'
         return response
 
