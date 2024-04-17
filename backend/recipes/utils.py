@@ -1,6 +1,6 @@
 import inspect
 
-from recipes.models import Recipe
+from recipes.models import Ingredient, IngredientInRecipe, Recipe
 from rest_framework import status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -91,3 +91,23 @@ def subscribe_action(self, request, submodel, serializer):
 
         return Response('Вы не были подписаны на данного пользователя.',
                             status=status.HTTP_400_BAD_REQUEST)
+
+def recipe_bind_ingredients_and_tags(self, validated_data, recipe):
+    ingredients_data = validated_data.pop('ingredients')
+    tags_data = validated_data.pop('tags')
+    if not recipe:
+        recipe = Recipe.objects.create(**validated_data)
+
+    for ingredient_data in ingredients_data:
+        ing_id = ingredient_data['id']
+        ing_amount = ingredient_data['amount']
+        ingredient = Ingredient.objects.get(id=ing_id)
+        ing_in_recipe, create = IngredientInRecipe.objects.get_or_create(
+        #     recipe=recipe,
+            ingredient=ingredient,
+            amount=ing_amount,
+        )
+        recipe.ingredients.add(ing_in_recipe)
+
+    recipe.tags.set(tags_data)
+    return recipe

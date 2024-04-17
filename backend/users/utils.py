@@ -24,12 +24,12 @@ def create_shopping_cart(request):
     ingredients = dict()
     for recipe in recipes:
         for ing_obj in recipe.ingredients.all():
-            ing_in_rec = IngredientInRecipe.objects.filter(
-                recipe=recipe,
-                ingredient=ing_obj,
-            ).first()
-            ingredient = str(ing_obj)
-        ingredients[ingredient] = ingredients.get(ingredient, 0) + ing_in_rec.amount
+            # ing_in_rec = IngredientInRecipe.objects.filter(
+            #     recipe=recipe,
+            #     ingredient=ing_obj,
+            # ).first()
+            ingredient = str(ing_obj.ingredient)
+        ingredients[ingredient] = ingredients.get(ingredient, 0) + ing_obj.amount
 
     body_text = ''
     for ingr, amount in ingredients.items():

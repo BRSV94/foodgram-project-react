@@ -7,6 +7,7 @@ from recipes.models import (
     Ingredient, IngredientInRecipe,
     Recipe, Tag,
 )
+from recipes.utils import recipe_bind_ingredients_and_tags
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
     CharField, Field, ImageField, IntegerField,
@@ -167,23 +168,36 @@ class RecipeSerializer(ModelSerializer):
         read_only_fields = ('id', 'author', 'is_favorited', 'is_in_shopping_cart',)
 
     def create(self, validated_data):
-        ingredients_data = validated_data.pop('ingredients')
-        tags_data = validated_data.pop('tags')
-        recipe = Recipe.objects.create(**validated_data)
+        recipe = recipe_bind_ingredients_and_tags(
+            self,
+            validated_data,
+            None
+        )
+        # ingredients_data = validated_data.pop('ingredients')
+        # tags_data = validated_data.pop('tags')
+        # recipe = Recipe.objects.create(**validated_data)
 
-        for ingredient_data in ingredients_data:
-            ing_id = ingredient_data['id']
-            ing_amount = ingredient_data['amount']
-            ingredient = Ingredient.objects.get(id=ing_id)
-            ing_in_recipe = IngredientInRecipe.objects.create(
-            #     recipe=recipe,
-                ingredient=ingredient,
-                amount=ing_amount,
-            )
-            recipe.ingredients.add(ing_in_recipe)
+        # for ingredient_data in ingredients_data:
+        #     ing_id = ingredient_data['id']
+        #     ing_amount = ingredient_data['amount']
+        #     ingredient = Ingredient.objects.get(id=ing_id)
+        #     ing_in_recipe = IngredientInRecipe.objects.create(
+        #     #     recipe=recipe,
+        #         ingredient=ingredient,
+        #         amount=ing_amount,
+        #     )
+        #     recipe.ingredients.add(ing_in_recipe)
 
-        recipe.tags.set(tags_data)
+        # recipe.tags.set(tags_data)
         return recipe
+    
+    def update(self, instance, validated_data):
+        update_recipe =  recipe_bind_ingredients_and_tags(
+            self,
+            validated_data,
+            instance
+        )
+        return update_recipe
 
     def get_is_favorited(self, obj):
         user = self.context['request'].user
