@@ -99,13 +99,6 @@ class Recipe(models.Model):
     text = models.TextField(
         verbose_name='Описание',
     )
-    # ingredients = models.ManyToManyField(
-    #     Ingredient,
-    #     through='IngredientInRecipe',
-    #     related_name='recipes',
-    #     verbose_name='Ингридиенты',
-    #     blank=True,
-    # )
     ingredients = models.ManyToManyField(
         'IngredientInRecipe',
         related_name='recipes',
@@ -125,7 +118,6 @@ class Recipe(models.Model):
                      'Это поле не может иметь отрицительные и нулевое значения.') 
     )
     
-
     class Meta:
         verbose_name = 'рецепт'
         verbose_name_plural = 'Рецепты'
@@ -136,11 +128,6 @@ class Recipe(models.Model):
 
 
 class IngredientInRecipe(models.Model):
-    # recipe = models.ForeignKey(
-    #     Recipe,
-    #     on_delete=models.CASCADE,
-    #     related_name='ingredient_in_recipe',
-    # )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
@@ -154,12 +141,6 @@ class IngredientInRecipe(models.Model):
         verbose_name = 'ингредиент в рецепте'
         verbose_name_plural = 'Ингредиенты в рецепте'
         ordering = ['ingredient']
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=['amount', 'ingredient'],
-        #         name='unique_amount_ingredient'
-        #     )
-        # ]
 
     def __str__(self):
         return f'{self.ingredient} - {self.amount}'

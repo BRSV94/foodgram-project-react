@@ -37,9 +37,6 @@ class RecipeAdmin(admin.ModelAdmin):
     filter_horizontal = (
         'tags',
     )
-    # inlines = (
-    #     IngredientInRecipeInline,
-    # )
 
 
 @admin.register(Ingredient)

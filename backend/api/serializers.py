@@ -96,33 +96,9 @@ class IngredientSerializer(ModelSerializer):
         read_only_fields = ('id', 'name', 'measurement_unit',)
 
 
-# class IngredientInRecipeSerializer(ModelSerializer):
-#     name = SerializerMethodField()
-#     measurement_unit = SerializerMethodField()
-
-#     def get_name(self, obj):
-#         return obj.ingredient.name
-    
-#     def get_measurement_unit(self, obj):
-#         return obj.ingredient.measurement_unit.measurement_unit
-    
-#     def create(self, validated_data):
-#         print(validated_data)
-    
-
-    # class Meta:
-    #     model = IngredientInRecipe
-    #     fields = ('id', 'name', 'measurement_unit', 'amount',)
-
-
 class IngredientInRecipeSerializer(ModelSerializer):
-    id = IntegerField(
-        # write_only=True
-        )
-    amount = IntegerField(
-        # write_only=True,
-        min_value=1,
-    )
+    id = IntegerField()
+    amount = IntegerField(min_value=1)
     name = SerializerMethodField()
     measurement_unit = SerializerMethodField()
 
@@ -137,10 +113,6 @@ class IngredientInRecipeSerializer(ModelSerializer):
         fields = ('id', 'name', 'measurement_unit', 'amount') #
         read_only_fields = ('name', 'measurement_unit',) #
 
-    # def to_representation(self, instance):
-    #     print(instance, "LOLOKEKE")
-    #     return super().to_representation(instance)
-
 
 class TagListField(PrimaryKeyRelatedField):
     def to_representation(self, value):
@@ -151,15 +123,10 @@ class TagListField(PrimaryKeyRelatedField):
 class RecipeSerializer(ModelSerializer):
     tags = TagListField(queryset=Tag.objects.all(), many=True)
     author = UserSerializer(read_only=True)
-    ingredients = IngredientInRecipeSerializer(
-        many=True,
-        # read_only=True,
-        # source='ingredient_in_recipe'
-    )
+    ingredients = IngredientInRecipeSerializer(many=True)
     is_favorited = SerializerMethodField()
     is_in_shopping_cart = SerializerMethodField()
     image = Base64ImageField()
-
 
     class Meta:
         model = Recipe
@@ -173,22 +140,6 @@ class RecipeSerializer(ModelSerializer):
             validated_data,
             None
         )
-        # ingredients_data = validated_data.pop('ingredients')
-        # tags_data = validated_data.pop('tags')
-        # recipe = Recipe.objects.create(**validated_data)
-
-        # for ingredient_data in ingredients_data:
-        #     ing_id = ingredient_data['id']
-        #     ing_amount = ingredient_data['amount']
-        #     ingredient = Ingredient.objects.get(id=ing_id)
-        #     ing_in_recipe = IngredientInRecipe.objects.create(
-        #     #     recipe=recipe,
-        #         ingredient=ingredient,
-        #         amount=ing_amount,
-        #     )
-        #     recipe.ingredients.add(ing_in_recipe)
-
-        # recipe.tags.set(tags_data)
         return recipe
     
     def update(self, instance, validated_data):
@@ -241,23 +192,6 @@ class RecipeSerializer(ModelSerializer):
             raise ValidationError(
                 "Тэги не могут повторяться.")
         return tags
-        
-    # def validate_image(self, image):
-    #     if not image:
-    #         raise ValidationError(
-    #             "Необходимо загрузить изображение.")
-    #     return image
-
-    # Сверху было image = Base64ImageField(required=False, allow_null=True)
-
-
-
-# class FavoritedSerializer(ModelSerializer):
-
-#     class Meta:
-#         model = Recipe
-#         fields = ('id', 'name', 'image', 'cooking_time',)
-#         read_only_fields = ('id', 'name', 'image', 'cooking_time',)
 
 
 class SubRecipeSerializer(ModelSerializer):
@@ -284,13 +218,6 @@ class SubscribesSerializer(UserSerializer):
                             'last_name', 'is_subscribed', 'recipes',
                             'recipes_count')
         depth = 1
-
-    # def __init__(self, *args, **kwargs):
-    #     recipe_limit = kwargs.pop('recipe_limit', None)
-    #     super().__init__(*args, **kwargs)
-
-    #     if recipe_limit:
-    #         self.fields['ingredients'].max_length = recipe_limit
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
