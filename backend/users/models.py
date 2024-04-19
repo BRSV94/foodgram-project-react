@@ -19,6 +19,11 @@ class User(AbstractUser):
         blank=False,
         verbose_name='Фамилия'
     )
+    password = models.CharField(
+        max_length=150,
+        blank=False,
+        verbose_name='Пароль'
+    )
 
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'
