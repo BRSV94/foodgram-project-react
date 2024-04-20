@@ -128,7 +128,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
         base_dir = settings.BASE_DIR
 
         relative_path = os.path.relpath(current_file_path, base_dir)
-
+        print(base_dir)
         print("Путь к текущему файлу:", relative_path)
 
         with open('../../data/ingredients.json', 'r') as file:
