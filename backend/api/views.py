@@ -123,6 +123,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
         print("ПОНЕСЛАСЬ!")
         with open('../../data/ingredients.json', 'r') as file:
             data = json.load(file)
+            print("Открывается.")
             for ingredient in data:
                 # {"name": "абрикосовое варенье", "measurement_unit": "г"}
                 name = ingredient['name']
