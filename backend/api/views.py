@@ -121,7 +121,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request, *args, **kwargs):
         print("ПОНЕСЛАСЬ!")
-        with open('ingredients.json', 'r') as file:
+        with open('../../data/ingredients.json', 'r') as file:
             data = json.load(file)
             print("Открывается.")
             for ingredient in data:
