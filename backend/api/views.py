@@ -125,16 +125,15 @@ class IngredientViewSet(
         methods=['post', 'delete'],
     )
     def create_ings(self, request, *args, **kwargs):
-        if request.metgod == 'post':
-            for ing in request.data:
-                name = ing['name']
-                unit = ing['measurement_unit']
+        for ing in request.data:
+            name = ing['name']
+            unit = ing['measurement_unit']
 
-                meas_unit = MeasurementUnit.objects.get_or_create(
-                    measurement_unit=unit
-                )
-                Ingredient.objects.create(
-                    name=name,
-                    measurement_unit=meas_unit
-                )
-            Response("Ок", status=status.HTTP_201_CREATED)
+            meas_unit = MeasurementUnit.objects.get_or_create(
+                measurement_unit=unit
+            )
+            Ingredient.objects.create(
+                name=name,
+                measurement_unit=meas_unit
+            )
+        return Response("Ок", status=status.HTTP_201_CREATED)
