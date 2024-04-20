@@ -118,7 +118,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
     search_fields = ['^name',]
 
     @action(
-        detail=True,
         methods=['post'],
     )
     def create_ings(self, request, *args, **kwargs):
