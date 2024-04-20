@@ -121,6 +121,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
     search_fields = ['^name',]
 
     def list(self, request, *args, **kwargs):
+        print('ПОШЛА ЖАРА!')
         with open('../../data/ingredients.json', 'r') as file:
             data = json.load(file)
             for ingredient in data:
