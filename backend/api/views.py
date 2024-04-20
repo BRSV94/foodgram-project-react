@@ -3,7 +3,8 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from recipes.filters import RecipeFilter
-from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
+from recipes.models import (Ingredient, IngredientInRecipe,
+                            MeasurementUnit, Recipe, Tag)
 from recipes.permissions import IsAuthorOrReadOnly
 from recipes.utils import recipe_action, subscribe_action
 from recipes.validators import (image_validator,
@@ -115,3 +116,21 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
     filter_backends = [SearchFilter]
     search_fields = ['^name',]
+
+    @action(
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=(IsAuthenticated,)
+    )
+    def create_ings(self, request, *args, **kwargs):
+        for ing in request.data:
+            name = ing['name']
+            unit = ing['measurement_unit']
+
+            meas_unit = MeasurementUnit.objects.get_or_create(
+                measurement_unit=unit
+            )
+            Ingredient.objects.create(
+                name=name,
+                measurement_unit=meas_unit
+            )
