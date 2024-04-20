@@ -1,4 +1,7 @@
 import json
+from django.conf import settings
+import os
+
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -121,6 +124,13 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request, *args, **kwargs):
         print("ПОНЕСЛАСЬ!")
+        current_file_path = os.path.abspath(__file__)
+        base_dir = settings.BASE_DIR
+
+        relative_path = os.path.relpath(current_file_path, base_dir)
+
+        print("Путь к текущему файлу:", relative_path)
+
         with open('../../data/ingredients.json', 'r') as file:
             data = json.load(file)
             print("Открывается.")
