@@ -27,6 +27,7 @@ from .serializers import (
     TagSerializer,
 )
 
+
 class CustomUserViewSet(UserViewSet):
 
     @action(
@@ -109,6 +110,8 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TagSerializer
     pagination_class = None
 
+import json
+
 
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
@@ -117,19 +120,32 @@ class IngredientViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['^name',]
 
-    @action(
-        methods=['post'],
-    )
-    def create_ings(self, request, *args, **kwargs):
-        for ing in request.data:
-            name = ing['name']
-            unit = ing['measurement_unit']
+    def list(self, request, *args, **kwargs):
+        with open('../../data/ingredients.json', 'r') as file:
+            data = json.load(file)
+            for ingredient in data:
+                # {"name": "абрикосовое варенье", "measurement_unit": "г"}
+                name = ingredient['name']
+                measurement_unit = ingredient['measurement_unit']
+                unit_obj = MeasurementUnit.objects.get_or_create(
+                    measurement_unit=measurement_unit
+                )
+                Ingredient.objects.get_or_create(
+                    name=name,
+                    measurement_unit=unit_obj
+                )
+        print('Данные ингредиентов успешно добавлены в бд.')
+        return super().list(request, *args, **kwargs)
+    # def create_ings(self, request, *args, **kwargs):
+        # for ing in request.data:
+        #     name = ing['name']
+        #     unit = ing['measurement_unit']
 
-            meas_unit = MeasurementUnit.objects.get_or_create(
-                measurement_unit=unit
-            )
-            Ingredient.objects.create(
-                name=name,
-                measurement_unit=meas_unit
-            )
-        return Response("Ок", status=status.HTTP_201_CREATED)
+        #     meas_unit = MeasurementUnit.objects.get_or_create(
+        #         measurement_unit=unit
+        #     )
+        #     Ingredient.objects.create(
+        #         name=name,
+        #         measurement_unit=meas_unit
+        #     )
+        # return Response("Ок", status=status.HTTP_201_CREATED)
