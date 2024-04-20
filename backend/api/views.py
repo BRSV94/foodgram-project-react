@@ -134,7 +134,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
         # print(base_dir)
         # print("Путь к текущему файлу:", relative_path)
 
-        with open('api/ingredients.json', 'r') as file:
+        with open('/home/yc-user/foodgram-project-react/data/ingredients.json', 'r') as file:
             data = json.load(file)
         #     print("Открывается.")
             for ingredient in data:
