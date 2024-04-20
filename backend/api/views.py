@@ -123,17 +123,20 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ['^name',]
 
     def list(self, request, *args, **kwargs):
-        print("ПОНЕСЛАСЬ!")
-        current_file_path = os.path.abspath(__file__)
-        base_dir = settings.BASE_DIR
+            
+        
 
-        relative_path = os.path.relpath(current_file_path, base_dir)
-        print(base_dir)
-        print("Путь к текущему файлу:", relative_path)
+        # print("ПОНЕСЛАСЬ!")
+        # current_file_path = os.path.abspath(__file__)
+        # base_dir = settings.BASE_DIR
 
-        with open('~/foodgram-project-react/data/ingredients.json', 'r') as file:
+        # relative_path = os.path.relpath(current_file_path, base_dir)
+        # print(base_dir)
+        # print("Путь к текущему файлу:", relative_path)
+
+        with open('api/ingredients.json', 'r') as file:
             data = json.load(file)
-            print("Открывается.")
+        #     print("Открывается.")
             for ingredient in data:
                 # {"name": "абрикосовое варенье", "measurement_unit": "г"}
                 name = ingredient['name']
