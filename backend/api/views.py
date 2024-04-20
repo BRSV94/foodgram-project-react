@@ -122,7 +122,7 @@ class IngredientViewSet(
 
     @action(
         detail=True,
-        methods=['post', 'delete'],
+        methods=['post', 'get', 'delete'],
     )
     def create_ings(self, request, *args, **kwargs):
         for ing in request.data:
