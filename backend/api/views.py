@@ -134,3 +134,4 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
                     name=name,
                     measurement_unit=meas_unit
                 )
+            Response("Ок", status=status.HTTP_201_CREATED)
