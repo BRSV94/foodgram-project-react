@@ -110,10 +110,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
 
 
-class IngredientViewSet(
-    # viewsets.ReadOnlyModelViewSet,
-    viewsets.ModelViewSet
-    ):
+class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
@@ -122,7 +119,7 @@ class IngredientViewSet(
 
     @action(
         detail=True,
-        methods=['post', 'get', 'delete'],
+        methods=['post'],
     )
     def create_ings(self, request, *args, **kwargs):
         for ing in request.data:
