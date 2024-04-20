@@ -124,12 +124,12 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request, *args, **kwargs):
         print("ПОНЕСЛАСЬ!")
-        # current_file_path = os.path.abspath(__file__)
-        # base_dir = settings.BASE_DIR
+        current_file_path = os.path.abspath(__file__)
+        base_dir = settings.BASE_DIR
 
-        # relative_path = os.path.relpath(current_file_path, base_dir)
-        # print(base_dir)
-        # print("Путь к текущему файлу:", relative_path)
+        relative_path = os.path.relpath(current_file_path, base_dir)
+        print(base_dir)
+        print("Путь к текущему файлу:", relative_path)
 
         with open('../data/ingredients.json', 'r') as file:
             data = json.load(file)
