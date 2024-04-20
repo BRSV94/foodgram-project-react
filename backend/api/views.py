@@ -120,7 +120,6 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     @action(
         detail=True,
         methods=['post', 'delete'],
-        permission_classes=(IsAuthenticated,)
     )
     def create_ings(self, request, *args, **kwargs):
         for ing in request.data:
