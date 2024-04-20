@@ -1,3 +1,4 @@
+import json
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -110,10 +111,8 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TagSerializer
     pagination_class = None
 
-import json
 
-
-class IngredientViewSet(viewsets.ModelViewSet):
+class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
@@ -122,20 +121,20 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         print('ПОШЛА ЖАРА!')
-        with open('../../data/ingredients.json', 'r') as file:
-            data = json.load(file)
-            for ingredient in data:
-                # {"name": "абрикосовое варенье", "measurement_unit": "г"}
-                name = ingredient['name']
-                measurement_unit = ingredient['measurement_unit']
-                unit_obj = MeasurementUnit.objects.get_or_create(
-                    measurement_unit=measurement_unit
-                )
-                Ingredient.objects.get_or_create(
-                    name=name,
-                    measurement_unit=unit_obj
-                )
-        print('Данные ингредиентов успешно добавлены в бд.')
+        # with open('../../data/ingredients.json', 'r') as file:
+        #     data = json.load(file)
+        #     for ingredient in data:
+        #         # {"name": "абрикосовое варенье", "measurement_unit": "г"}
+        #         name = ingredient['name']
+        #         measurement_unit = ingredient['measurement_unit']
+        #         unit_obj = MeasurementUnit.objects.get_or_create(
+        #             measurement_unit=measurement_unit
+        #         )
+        #         Ingredient.objects.get_or_create(
+        #             name=name,
+        #             measurement_unit=unit_obj
+        #         )
+        # print('Данные ингредиентов успешно добавлены в бд.')
         return super().list(request, *args, **kwargs)
     # def create_ings(self, request, *args, **kwargs):
         # for ing in request.data:
