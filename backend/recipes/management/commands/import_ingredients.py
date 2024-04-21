@@ -13,7 +13,7 @@ class Command(BaseCommand):
                 name = ing['name']
                 unit = ing['measurement_unit']
 
-                meas_unit = MeasurementUnit.objects.get_or_create(
+                meas_unit, create = MeasurementUnit.objects.get_or_create(
                     measurement_unit=unit
                 )
                 Ingredient.objects.create(
