@@ -39,9 +39,9 @@ class RecipeAdmin(admin.ModelAdmin):
         'tags',
     )
 
-    @admin.display(description='Добавлен в избранное')
-    def favorited(self, obj):
-        return obj.favorited.count()
+    # @admin.display(description='Добавлен в избранное')
+    # def favorited(self, obj):
+    #     return obj.favorited.count()
 
 
 @admin.register(Ingredient)
