@@ -112,5 +112,5 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ['^name',]
 
 
-def handler404(request, exception):
+def page_not_found(request, exception):
     return render(request, 'error_templates/404.html', status=404)
