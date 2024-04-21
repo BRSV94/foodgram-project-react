@@ -7,20 +7,6 @@ from django.http import HttpResponse
 from django.core.exceptions import ValidationError
 from .utils import create_shopping_cart
 
-@admin.register(ShoppingCart)
-class ShoppingCartAdmin(admin.ModelAdmin):
-
-    def download_shopping_cart(self, request, queryset):
-        user = request.user
-        if not user.shopping_cart.exists():
-            raise ValidationError("Ваш список покупок пуст.")
-        shopping_list_pdf, pdf_name = create_shopping_cart(request)
-        response = HttpResponse(shopping_list_pdf, content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename={pdf_name}'
-        return response
-
-    download_shopping_cart.short_description = "Download Shopping Cart PDF"
-
 
 @admin.register(User)
 class UserAdmin(UserAdmin):
@@ -82,4 +68,14 @@ class ShoppingCartdAdmin(admin.ModelAdmin):
     filter_horizontal = (
         'recipes',
     )
-  
+
+    def download_shopping_cart(self, request, queryset):
+        user = request.user
+        if not user.shopping_cart.exists():
+            raise ValidationError("Ваш список покупок пуст.")
+        shopping_list_pdf, pdf_name = create_shopping_cart(request)
+        response = HttpResponse(shopping_list_pdf, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename={pdf_name}'
+        return response
+
+    download_shopping_cart.short_description = "Download Shopping Cart PDF"
