@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from recipes.models import Ingredient, MeasurementUnit
 
 
-class ImportIngredients(BaseCommand):
+class Command(BaseCommand):
     def handle(self, *args, **options):
 
         with open('..ingredients.json/', 'r') as file:
