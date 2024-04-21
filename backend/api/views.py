@@ -4,6 +4,7 @@ from recipes.filters import RecipeFilter
 from recipes.models import (Ingredient, MeasurementUnit,
                             Recipe, Tag)
 from recipes.permissions import IsAuthorOrReadOnly
+from django.shortcuts import render
 from recipes.utils import recipe_action, subscribe_action
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -109,3 +110,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
     filter_backends = [SearchFilter]
     search_fields = ['^name',]
+
+
+def handler404(request, exception):
+    return render(request, 'error_templates/404.html', status=404)
