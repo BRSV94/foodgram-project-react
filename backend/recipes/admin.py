@@ -28,6 +28,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'id',
         'name',
         'author',
+        'favorited',
     )
     list_filter = (
         'name',
@@ -37,6 +38,10 @@ class RecipeAdmin(admin.ModelAdmin):
     filter_horizontal = (
         'tags',
     )
+
+    @admin.display(description='Добавлен в избранное')
+    def favorited(self, obj):
+        return obj.favorited.count()
 
 
 @admin.register(Ingredient)
