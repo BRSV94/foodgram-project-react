@@ -1,31 +1,24 @@
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from recipes.filters import RecipeFilter
-from recipes.models import (Ingredient, IngredientInRecipe,
-                            MeasurementUnit, Recipe, Tag)
+from recipes.models import (Ingredient, MeasurementUnit,
+                            Recipe, Tag)
 from recipes.permissions import IsAuthorOrReadOnly
 from recipes.utils import recipe_action, subscribe_action
-from recipes.validators import (image_validator,
-                                ingredients_validator,
-                                tags_validator)
-from rest_framework import status, viewsets
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
-from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
-from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.serializers import ValidationError
-from users.models import Favorited, ShoppingCart, User, UsersSubscribes
-from users.permissions import IsOwnerProfile
+from users.models import Favorited, ShoppingCart, UsersSubscribes
 from users.utils import create_shopping_cart
 
 from .serializers import (
-    IngredientInRecipeSerializer,
     IngredientSerializer, RecipeSerializer,
     SubRecipeSerializer, SubscribesSerializer,
     TagSerializer,
 )
+
 
 class CustomUserViewSet(UserViewSet):
 
@@ -110,27 +103,9 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
 
 
-class IngredientViewSet(viewsets.ModelViewSet):
+class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
     filter_backends = [SearchFilter]
     search_fields = ['^name',]
-
-    @action(
-        detail=True,
-        methods=['post'],
-    )
-    def create_ings(self, request, *args, **kwargs):
-        for ing in request.data:
-            name = ing['name']
-            unit = ing['measurement_unit']
-
-            meas_unit = MeasurementUnit.objects.get_or_create(
-                measurement_unit=unit
-            )
-            Ingredient.objects.create(
-                name=name,
-                measurement_unit=meas_unit
-            )
-        return Response("Ок", status=status.HTTP_201_CREATED)
