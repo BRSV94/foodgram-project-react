@@ -28,7 +28,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'id',
         'name',
         'author',
-        # 'favorited',
+        'favorited_count',
     )
     list_filter = (
         'name',
@@ -42,6 +42,10 @@ class RecipeAdmin(admin.ModelAdmin):
     # @admin.display(description='Добавлен в избранное')
     # def favorited(self, obj):
     #     return obj.favorited.count()
+    def favorited_count(self, obj):
+        return obj.favorited.count()
+
+    favorited_count.short_description = 'Добавлен в избранное'
 
 
 @admin.register(Ingredient)
