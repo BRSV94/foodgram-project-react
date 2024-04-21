@@ -1,6 +1,5 @@
 from aspose import pdf
 from django.shortcuts import get_object_or_404
-from recipes.models import IngredientInRecipe
 
 from .models import ShoppingCart
 
@@ -18,14 +17,19 @@ def create_shopping_cart(request):
     recipes = cart.recipes.all()
     file = pdf.Document()
     page = file.pages.add()
-    title_text = pdf.text.TextFragment(f'Список покупок пользователя {user}:\n\n')
+    title_text = pdf.text.TextFragment(
+        f'Список покупок пользователя {user}:\n\n'
+    )
     page.paragraphs.add(title_text)
 
     ingredients = dict()
     for recipe in recipes:
         for ing_obj in recipe.ingredients.all():
             ingredient = str(ing_obj.ingredient)
-        ingredients[ingredient] = ingredients.get(ingredient, 0) + ing_obj.amount
+        ingredients[ingredient] = ingredients.get(
+            ingredient,
+            0
+        ) + ing_obj.amount
 
     body_text = ''
     for ingr, amount in ingredients.items():

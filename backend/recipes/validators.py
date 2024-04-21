@@ -3,8 +3,8 @@ from rest_framework import serializers
 
 def ingredients_validator(self, ingredients):
     if not ingredients:
-            raise serializers.ValidationError(
-                "Необходимо указать ингредиенты.")
+        raise serializers.ValidationError(
+            "Необходимо указать ингредиенты.")
     ing_ids = []
     for ingredient in ingredients:
         if ingredient['id'] in ing_ids:
@@ -20,7 +20,8 @@ def tags_validator(self, tags):
     if tags and len(tags) != len(set(tags)):
         raise serializers.ValidationError(
             "Тэги не могут повторяться.")
-    
+
+
 def image_validator(self, image):
     if image is None:
         raise serializers.ValidationError(

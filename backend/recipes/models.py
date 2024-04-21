@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
@@ -46,7 +45,7 @@ class MeasurementUnit(models.Model):
         max_length=200,
         verbose_name='Единицы измерения',
     )
-    
+
     class Meta:
         verbose_name = 'единица измерения'
         verbose_name_plural = 'Единицы измерения'
@@ -113,14 +112,15 @@ class Recipe(models.Model):
     cooking_time = models.PositiveIntegerField(
         validators=[MinValueValidator(1)],
         verbose_name='Время приготовления в мин.',
-        null = False,
-        help_text = ('Время приготовления должно быть указано в минутах. '
-                     'Это поле не может иметь отрицительные и нулевое значения.') 
+        null=False,
+        help_text=('Время приготовления должно быть указано в минутах. '
+                     'Это поле не может иметь '
+                     'отрицительные и нулевое значения.')
     )
     created_at = models.DateTimeField(
         auto_now_add=True
     )
-    
+
     class Meta:
         verbose_name = 'рецепт'
         verbose_name_plural = 'Рецепты'

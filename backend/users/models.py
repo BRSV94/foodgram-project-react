@@ -42,11 +42,10 @@ class UsersSubscribes(models.Model):
         verbose_name='Подписки',
         blank=True,
     )
-    
+
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-
 
 
 class Favorited(models.Model):

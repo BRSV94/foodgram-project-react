@@ -1,8 +1,7 @@
 from django.http import HttpResponse
 from djoser.views import UserViewSet
 from recipes.filters import RecipeFilter
-from recipes.models import (Ingredient, MeasurementUnit,
-                            Recipe, Tag)
+from recipes.models import Ingredient, Recipe, Tag
 from recipes.permissions import IsAuthorOrReadOnly
 from django.shortcuts import render
 from recipes.utils import recipe_action, subscribe_action
@@ -53,7 +52,6 @@ class CustomUserViewSet(UserViewSet):
         return self.get_paginated_response(serializer.data)
 
 
-
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
@@ -73,7 +71,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             raise ValidationError("Ваш список покупок пуст.")
 
         shopping_list_pdf, pdf_name = create_shopping_cart(request)
-        response = HttpResponse(shopping_list_pdf, content_type='application/pdf')
+        response = HttpResponse(
+            shopping_list_pdf,
+            content_type='application/pdf'
+        )
         response['Content-Disposition'] = f'attachment; filename={pdf_name}'
         return response
 
@@ -87,15 +88,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer = SubRecipeSerializer
         return recipe_action(self, request, model, serializer)
 
-    @action(detail=True,
+    @action(
+        detail=True,
         methods=['post', 'delete'],
-        permission_classes=(IsAuthenticated,)
+        permission_classes=(IsAuthenticated,),
     )
     def shopping_cart(self, request, *args, **kwargs):
         model = ShoppingCart
         serializer = SubRecipeSerializer
         return recipe_action(self, request, model, serializer)
-        
+
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
@@ -108,7 +110,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     pagination_class = None
     filter_backends = [SearchFilter]
-    search_fields = ['^name',]
+    search_fields = ['^name', ]
 
 
 def page_not_found(request, exception):

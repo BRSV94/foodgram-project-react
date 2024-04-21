@@ -33,7 +33,7 @@ class SubscribeAdmin(admin.ModelAdmin):
     filter_horizontal = (
         'subscribes',
     )
-        
+
 
 @admin.register(Favorited)
 class FavoritedAdmin(admin.ModelAdmin):

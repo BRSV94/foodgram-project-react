@@ -54,7 +54,7 @@ class IngredientsAdmin(admin.ModelAdmin):
 
 
 @admin.register(IngredientInRecipe)
-class IngredientsAdmin(admin.ModelAdmin):
+class IngredientsInRecipeAdmin(admin.ModelAdmin):
     list_display = (
         'ingredient',
     )

@@ -25,7 +25,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', '')
 # SECRET_KEY = 'django-insecure-s%px4b=tiq^-y8$asuq!+e$13(zr9qh!gvr#6@))j!l*m^26c8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG') == True
+DEBUG = os.getenv('DEBUG') is True
 # DEBUG = True
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(', ')
@@ -85,7 +85,7 @@ DJOSER = {
         'user_create': 'api.serializers.UserCreateSerializer',
         'current_user': 'api.serializers.UserSerializer',
     },
-    'PERMISSIONS': {     
+    'PERMISSIONS': {
         'user_list': ['rest_framework.permissions.AllowAny'],
         'user': ['users.permissions.IsAuthenticatedOrNotMe'],
     },

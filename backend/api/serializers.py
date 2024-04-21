@@ -8,9 +8,8 @@ from recipes.models import (
     Recipe, Tag,
 )
 from recipes.utils import recipe_create_or_update
-from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
-    CharField, Field, ImageField, IntegerField,
+    Field, ImageField, IntegerField,
     ModelSerializer, PrimaryKeyRelatedField,
     SerializerMethodField, ValidationError,
 )
@@ -26,7 +25,7 @@ class Base64ImageField(ImageField):
             data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
 
         return super().to_internal_value(data)
-    
+
 
 class Hex2NameColor(Field):
     def to_representation(self, value):
@@ -59,12 +58,13 @@ class UserSerializer(ModelSerializer):
                   'first_name', 'last_name', 'is_subscribed')
         read_only_fields = ('id',)
 
+
 class UserCreateSerializer(ModelSerializer):
 
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])
         return super().create(validated_data)
-    
+
     class Meta:
         model = User
         fields = ('email', 'id', 'username',
@@ -73,11 +73,10 @@ class UserCreateSerializer(ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
 
-
 class TagSerializer(ModelSerializer):
 
     color = Hex2NameColor()
-    
+
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug',)
@@ -104,14 +103,14 @@ class IngredientInRecipeSerializer(ModelSerializer):
 
     def get_name(self, obj):
         return obj.ingredient.name
-    
+
     def get_measurement_unit(self, obj):
         return obj.ingredient.measurement_unit.measurement_unit
-    
+
     class Meta:
         model = IngredientInRecipe
-        fields = ('id', 'name', 'measurement_unit', 'amount') #
-        read_only_fields = ('name', 'measurement_unit',) #
+        fields = ('id', 'name', 'measurement_unit', 'amount')
+        read_only_fields = ('name', 'measurement_unit',)
 
 
 class TagListField(PrimaryKeyRelatedField):
@@ -130,9 +129,24 @@ class RecipeSerializer(ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'tags', 'author', 'ingredients', 'is_favorited',
-                  'is_in_shopping_cart', 'name', 'image', 'text', 'cooking_time',)
-        read_only_fields = ('id', 'author', 'is_favorited', 'is_in_shopping_cart',)
+        fields = (
+            'id',
+            'tags',
+            'author',
+            'ingredients',
+            'is_favorited',
+            'is_in_shopping_cart',
+            'name',
+            'image',
+            'text',
+            'cooking_time',
+        )
+        read_only_fields = (
+            'id',
+            'author',
+            'is_favorited',
+            'is_in_shopping_cart',
+        )
 
     def create(self, validated_data):
         recipe = recipe_create_or_update(
@@ -141,7 +155,7 @@ class RecipeSerializer(ModelSerializer):
             None
         )
         return recipe
-    
+
     def update(self, instance, validated_data):
         update_recipe = recipe_create_or_update(
             self,
@@ -157,13 +171,13 @@ class RecipeSerializer(ModelSerializer):
     
     def get_is_in_shopping_cart(self, obj):
         user = self.context['request'].user
-        return (user.is_authenticated and
-                user.shopping_cart.filter(recipes=obj).exists())
+        return (user.is_authenticated
+                and user.shopping_cart.filter(recipes=obj).exists())
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
             raise ValidationError(
-                    "Необходимо указать ингредиенты.")
+                "Необходимо указать ингредиенты.")
         ing_ids = []
         for ingredient in ingredients:
             if not ingredient['id'] or not ingredient['amount']:
@@ -182,7 +196,6 @@ class RecipeSerializer(ModelSerializer):
                 raise ValidationError(
                     "Кол-во ингредиента не может быть меньше, чем 1.")
         return ingredients
-
 
     def validate_tags(self, tags):
         if not tags:
@@ -205,7 +218,7 @@ class SubRecipeSerializer(ModelSerializer):
 class SubscribesSerializer(UserSerializer):
     recipes = SubRecipeSerializer(
         read_only=True,
-        many=True,     
+        many=True,
     )
     recipes_count = SerializerMethodField()
 
