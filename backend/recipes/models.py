@@ -117,11 +117,14 @@ class Recipe(models.Model):
         help_text = ('Время приготовления должно быть указано в минутах. '
                      'Это поле не может иметь отрицительные и нулевое значения.') 
     )
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
     
     class Meta:
         verbose_name = 'рецепт'
         verbose_name_plural = 'Рецепты'
-        ordering = ['name']
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.name
