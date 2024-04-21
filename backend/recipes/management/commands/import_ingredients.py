@@ -7,7 +7,7 @@ from recipes.models import Ingredient, MeasurementUnit
 class Command(BaseCommand):
     def handle(self, *args, **options):
 
-        with open('..ingredients.json/', 'r') as file:
+        with open('../ingredients.json/', 'r') as file:
             data = json.load(file)
             for ing in data:
                 name = ing['name']
