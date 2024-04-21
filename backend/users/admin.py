@@ -11,11 +11,13 @@ class UserAdmin(UserAdmin):
         'username',
         'first_name',
         'last_name',
+        'email',
     )
     list_filter = (
         'username',
         'first_name',
         'last_name',
+        'email',
     )
 
 
