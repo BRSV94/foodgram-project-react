@@ -78,8 +78,8 @@ class IngredientsInRecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description='Используется в:')
     def recipes_list(self, obj):
-        # return f'{self}, LOLKEK'
-        return ', '.join([recipe.name for recipe in obj.recipes.all()]) or None
+        return obj.recipes
+        # return ', '.join([recipe.name for recipe in obj.recipes.all()]) or None
 
 
 
