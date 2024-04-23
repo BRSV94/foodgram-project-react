@@ -30,7 +30,7 @@ def create_shopping_cart(request):
             ingredient,
             0
         ) + ing_obj.amount
-
+    print('CHECKPOINT 3')
     body_text = ''
     for ingr, amount in ingredients.items():
         body_text += f'{ingr} - {amount}\n'
