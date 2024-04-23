@@ -80,8 +80,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         user = request.user
         if not user.shopping_cart.exists():
             raise ValidationError("Ваш список покупок пуст.")
-
+        print('ДО ГЕНЕРАЦИИ ВСЕ ОК')
         shopping_list_pdf, pdf_name = create_shopping_cart(request)
+        print('После ГЕНЕРАЦИИ ВСЕ ОК')
         response = HttpResponse(
             shopping_list_pdf,
             content_type='application/pdf'
