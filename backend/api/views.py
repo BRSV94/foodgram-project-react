@@ -87,6 +87,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             content_type='application/pdf'
         )
         response['Content-Disposition'] = f'attachment; filename={pdf_name}'
+        print('Тут все отработало.', pdf_name, response)
         return response
 
     @action(
