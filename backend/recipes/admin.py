@@ -20,9 +20,6 @@ class IngredientInRecipeInline(admin.TabularInline):
     inlines = (
         IngredientInline,
     )
-    search_fields = (
-        'name',
-    )
 
 
 @admin.register(Recipe)
@@ -77,6 +74,9 @@ class IngredientsInRecipeAdmin(admin.ModelAdmin):
     )
     list_filter = (
         'ingredient',
+    )
+    search_fields = (
+        'name',
     )
 
 
