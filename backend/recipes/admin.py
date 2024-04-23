@@ -37,6 +37,9 @@ class RecipeAdmin(admin.ModelAdmin):
     filter_horizontal = (
         'tags',
     )
+    search_fields = (
+        'name',
+    )
 
 
 @admin.register(Ingredient)
@@ -44,6 +47,7 @@ class IngredientsAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'id',
+        'measurement_unit',
     )
     list_filter = (
         'name',
@@ -51,12 +55,22 @@ class IngredientsAdmin(admin.ModelAdmin):
     inlines = (
         IngredientInRecipeInline,
     )
+    search_fields = (
+        'name',
+    )
+
+
+@admin.display(description='Используется в:')
+def recipes(self):
+    return ', '.join([recipe.name for recipe in self.recipes.all()])
 
 
 @admin.register(IngredientInRecipe)
 class IngredientsInRecipeAdmin(admin.ModelAdmin):
     list_display = (
         'ingredient',
+        'recipes',
+        'amount',
     )
     list_filter = (
         'ingredient',
