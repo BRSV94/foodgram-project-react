@@ -62,8 +62,11 @@ def create_shopping_cart(request):
     # '''
 
     user = request.user
+    print('LOLLOLOLO 1')
     cart = get_object_or_404(ShoppingCart, user=user)
+    print('LOLLOLOLO 2')
     recipes = cart.recipes.all()
+    print('LOLLOLOLO 3')
     # file = pdf.Document()
     # page = file.pages.add()
     # title_text = pdf.text.TextFragment(
@@ -79,15 +82,18 @@ def create_shopping_cart(request):
             ingredient,
             0
         ) + ing_obj.amount
-
+    print('LOLLOLOLO 4')
     body_text = ''
     for ingr, amount in ingredients.items():
+        print('LOLLOLOLO 5')
         body_text += f'{ingr} - {amount}\n'
 #     body_text_fragment = pdf.text.TextFragment(body_text)
 #     page.paragraphs.add(body_text_fragment)
+    print('LOLLOLOLO 6')
     file = (f'Cписок_покупок_{user.username}'
             + body_text)
     print(file)
+    print('LOLLOLOLO 7')
     file_name = f'список_покупок_{user.username}.pdf'
 #     file.save(file_name)
     return (file, file_name)

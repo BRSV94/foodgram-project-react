@@ -71,7 +71,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         user = request.user
         if not user.shopping_cart.exists():
             raise ValidationError("Ваш список покупок пуст.")
+        print('После ГЕНЕРАЦИИ ВСЕ ОК')
         shopping_list, filename = create_shopping_cart(user, request)
+        print('И после ОК')
         # filename = f'{user.username}_shopping_list.txt'
         response = HttpResponse(shopping_list, content_type='text/plain')
         response['Content-Disposition'] = f'attachment; filename={filename}'
