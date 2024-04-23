@@ -15,14 +15,23 @@ def create_shopping_cart(request):
     user = request.user
     cart = get_object_or_404(ShoppingCart, user=user)
     recipes = cart.recipes.all()
+    print('CHECKPOINT 0')
     file = pdf.Document()
+    
+    print('CHECKPOINT 1')
     page = file.pages.add()
+    
+    print('CHECKPOINT 2')
     title_text = pdf.text.TextFragment(
         f'Список покупок пользователя {user}:\n\n'
     )
+    print('CHECKPOINT 3')
     page.paragraphs.add(title_text)
+    
+    print('CHECKPOINT 4')
 
     ingredients = dict()
+    print('CHECKPOINT 5')
     for recipe in recipes:
         for ing_obj in recipe.ingredients.all():
             ingredient = str(ing_obj.ingredient)
@@ -30,7 +39,7 @@ def create_shopping_cart(request):
             ingredient,
             0
         ) + ing_obj.amount
-    print('CHECKPOINT 3')
+    print('CHECKPOINT 6')
     body_text = ''
     for ingr, amount in ingredients.items():
         body_text += f'{ingr} - {amount}\n'
