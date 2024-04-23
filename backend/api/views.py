@@ -9,6 +9,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from users.models import Favorited, ShoppingCart, UsersSubscribes
 from users.utils import create_shopping_cart
@@ -71,12 +72,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             raise ValidationError("Ваш список покупок пуст.")
 
         shopping_list_pdf, pdf_name = create_shopping_cart(request)
-        response = HttpResponse(
-            shopping_list_pdf,
-            content_type='application/pdf'
-        )
-        response['Content-Disposition'] = f'attachment; filename={pdf_name}'
-        return response
+        # response = HttpResponse(
+        #     shopping_list_pdf,
+        #     content_type='application/pdf'
+        # )
+        # response['Content-Disposition'] = f'attachment; filename={pdf_name}'
+        # return response
+        return Response(shopping_list_pdf)
 
     @action(
         detail=True,
