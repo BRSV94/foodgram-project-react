@@ -67,13 +67,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         methods=['get'],
         permission_classes=(IsAuthenticated,)
     )
-    def download_shopping_cart(request):
+    def download_shopping_cart(self, request):
         print('ВОШЛИ В ЭКШН')
-        user = request.user
-        if not user.shopping_cart.exists():
+        if not request.user.shopping_cart.exists():
             raise ValidationError("Ваш список покупок пуст.")
         print('После ГЕНЕРАЦИИ ВСЕ ОК')
-        shopping_list, filename = create_shopping_cart(user, request)
+        shopping_list, filename = create_shopping_cart(request)
         print('И после ОК')
         # filename = f'{user.username}_shopping_list.txt'
         response = HttpResponse(shopping_list, content_type='text/plain')
