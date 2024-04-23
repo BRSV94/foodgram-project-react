@@ -68,6 +68,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(request):
+        print('ВОШЛИ В ЭКШН')
         user = request.user
         if not user.shopping_cart.exists():
             raise ValidationError("Ваш список покупок пуст.")
