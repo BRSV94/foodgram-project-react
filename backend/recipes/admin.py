@@ -66,7 +66,7 @@ class IngredientsAdmin(admin.ModelAdmin):
 class IngredientsInRecipeAdmin(admin.ModelAdmin):
     list_display = (
         'ingredient',
-        # 'recipes',
+        'recipes_list',
         'amount',
     )
     list_filter = (
@@ -77,7 +77,7 @@ class IngredientsInRecipeAdmin(admin.ModelAdmin):
     )
 
     @admin.display(description='Используется в:')
-    def recipes(self):
+    def recipes_list(self):
         return f'{self}, LOLKEK'
     # return ', '.join([recipe.name for recipe in self.recipes.all()]) or None
 
