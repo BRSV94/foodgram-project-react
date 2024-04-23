@@ -20,6 +20,9 @@ class IngredientInRecipeInline(admin.TabularInline):
     inlines = (
         IngredientInline,
     )
+    search_fields = (
+        'name',
+    )
 
 
 @admin.register(Recipe)
