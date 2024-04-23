@@ -99,6 +99,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
         model = ShoppingCart
         serializer = SubRecipeSerializer
         return recipe_action(self, request, model, serializer)
+    
+    @action(
+        detail=False,
+        methods=['get'],
+        permission_classes=(IsAuthenticated,)
+    )
+    def cart(self, request):
+        user = request.user
+        if not user.shopping_cart.exists():
+            raise ValidationError("Ваш список покупок пуст.")
+
+        shopping_list_pdf, pdf_name = create_shopping_cart(request)
+        response = HttpResponse(
+            shopping_list_pdf,
+            content_type='application/pdf'
+        )
+        response['Content-Disposition'] = f'attachment; filename={pdf_name}'
+        return response
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
