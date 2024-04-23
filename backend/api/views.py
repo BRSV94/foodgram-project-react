@@ -64,6 +64,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
+        methods=['get'],
         permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
@@ -72,13 +73,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             raise ValidationError("Ваш список покупок пуст.")
 
         shopping_list_pdf, pdf_name = create_shopping_cart(request)
-        # response = HttpResponse(
-        #     shopping_list_pdf,
-        #     content_type='application/pdf'
-        # )
-        # response['Content-Disposition'] = f'attachment; filename={pdf_name}'
-        # return response
-        return Response(shopping_list_pdf)
+        response = HttpResponse(
+            shopping_list_pdf,
+            content_type='application/pdf'
+        )
+        response['Content-Disposition'] = f'attachment; filename={pdf_name}'
+        return response
 
     @action(
         detail=True,
