@@ -66,7 +66,7 @@ class IngredientsAdmin(admin.ModelAdmin):
 class IngredientsInRecipeAdmin(admin.ModelAdmin):
     list_display = (
         'ingredient',
-        'recipes',
+        # 'recipes',
         'amount',
     )
     list_filter = (
