@@ -76,7 +76,7 @@ class IngredientsInRecipeAdmin(admin.ModelAdmin):
         'ingredient',
     )
     search_fields = (
-        'name',
+        'ingredient',
     )
 
 
