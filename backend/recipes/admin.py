@@ -60,10 +60,6 @@ class IngredientsAdmin(admin.ModelAdmin):
     )
 
 
-@admin.display(description='Используется в:')
-def recipes(self):
-    return f'{self}, LOLKEK'
-    # return ', '.join([recipe.name for recipe in self.recipes.all()]) or None
 
 
 @admin.register(IngredientInRecipe)
@@ -79,6 +75,12 @@ class IngredientsInRecipeAdmin(admin.ModelAdmin):
     search_fields = (
         'ingredient',
     )
+
+    @admin.display(description='Используется в:')
+    def recipes(self):
+        return f'{self}, LOLKEK'
+    # return ', '.join([recipe.name for recipe in self.recipes.all()]) or None
+
 
 
 @admin.register(Tag)
