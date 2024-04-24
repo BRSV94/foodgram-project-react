@@ -7,12 +7,13 @@ from recipes.models import Ingredient, Recipe, Tag
 User = get_user_model()
 
 
-class IngredientFilter(FilterSet):
-    name = filters.CharFilter(lookup_expr='startswith')
+# class IngredientFilter(FilterSet):
+#     name = filters.CharFilter(
+#         lookup_expr='startswith')
 
-    class Meta:
-        model = Ingredient
-        fields = ('name',)
+#     class Meta:
+#         model = Ingredient
+#         fields = ('name',)
 
 
 class RecipeFilter(FilterSet):
