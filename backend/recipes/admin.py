@@ -1,9 +1,7 @@
 from django.contrib import admin
 
-from .models import (
-    Ingredient, IngredientInRecipe,
-    MeasurementUnit, Recipe, Tag,
-)
+from .models import (Ingredient, IngredientInRecipe, MeasurementUnit, Recipe,
+                     Tag)
 
 
 class TagsInline(admin.TabularInline):
@@ -28,6 +26,8 @@ class RecipeAdmin(admin.ModelAdmin):
         'id',
         'name',
         'author',
+        'ingredients',
+        'tags',
     )
     list_filter = (
         'name',

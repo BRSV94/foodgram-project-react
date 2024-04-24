@@ -64,7 +64,6 @@ class Ingredient(models.Model):
         MeasurementUnit,
         on_delete=models.CASCADE,
         related_name='ingredients',
-        # default='шт.'
     )
 
     class Meta:

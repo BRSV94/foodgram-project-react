@@ -1,9 +1,9 @@
 import inspect
 
+from django.shortcuts import get_object_or_404
 from recipes.models import Ingredient, IngredientInRecipe, Recipe
 from rest_framework import status
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 from users.models import User
 
 
@@ -18,8 +18,8 @@ def add(self, serializer, obj, obj_for_add):
                     headers=headers)
 
 
-def remove(obj, obj_for_add):
-    obj.recipes.remove(obj_for_add)
+def remove(obj, obj_for_remove):
+    obj.recipes.remove(obj_for_remove)
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 

@@ -1,9 +1,9 @@
 from django.http import HttpResponse
+from django.shortcuts import render
 from djoser.views import UserViewSet
 from recipes.filters import RecipeFilter
 from recipes.models import Ingredient, Recipe, Tag
 from recipes.permissions import IsAuthorOrReadOnly
-from django.shortcuts import render
 from recipes.utils import recipe_action, subscribe_action
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -13,11 +13,9 @@ from rest_framework.serializers import ValidationError
 from users.models import Favorited, ShoppingCart, UsersSubscribes
 from users.utils import create_shopping_cart
 
-from .serializers import (
-    IngredientSerializer, RecipeSerializer,
-    SubRecipeSerializer, SubscribesSerializer,
-    TagSerializer,
-)
+from .serializers import (IngredientSerializer, RecipeSerializer,
+                          SubRecipeSerializer, SubscribesSerializer,
+                          TagSerializer)
 
 
 class CustomUserViewSet(UserViewSet):

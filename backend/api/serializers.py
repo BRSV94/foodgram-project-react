@@ -1,56 +1,16 @@
-import base64
-
-import webcolors
-from django.core.files.base import ContentFile
 from django.contrib.auth.hashers import make_password
-from recipes.models import (
-    Ingredient, IngredientInRecipe,
-    Recipe, Tag,
-)
+from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from recipes.utils import recipe_create_or_update
-from rest_framework.serializers import (
-    Field, ImageField, IntegerField,
-    ModelSerializer, PrimaryKeyRelatedField,
-    SerializerMethodField, ValidationError,
-)
+from rest_framework.serializers import (IntegerField, ModelSerializer,
+                                        PrimaryKeyRelatedField,
+                                        SerializerMethodField, ValidationError)
 from users.models import User, UsersSubscribes
 
-
-class Base64ImageField(ImageField):
-    def to_internal_value(self, data):
-        if isinstance(data, str) and data.startswith('data:image'):
-            format, imgstr = data.split(';base64,')
-            ext = format.split('/')[-1]
-
-            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-
-        return super().to_internal_value(data)
-
-
-class Hex2NameColor(Field):
-    def to_representation(self, value):
-        return value
-
-    def to_internal_value(self, data):
-        try:
-            data = webcolors.hex_to_name(data)
-        except ValueError:
-            raise ValidationError('Для этого цвета нет имени')
-        return data
+from .fields import Base64ImageField, Hex2NameColor
 
 
 class UserSerializer(ModelSerializer):
     is_subscribed = SerializerMethodField()
-
-    def get_is_subscribed(self, obj, *args, **kwargs):
-        user = obj
-
-        if not self.context.get('request'):
-            return True
-
-        current_user = self.context.get('request').user
-        return UsersSubscribes.objects.filter(
-            user=current_user.id, subscribes=user).exists()
 
     class Meta:
         model = User
@@ -58,13 +18,16 @@ class UserSerializer(ModelSerializer):
                   'first_name', 'last_name', 'is_subscribed')
         read_only_fields = ('id',)
 
+    def get_is_subscribed(self, obj, *args, **kwargs):
+        if not self.context.get('request'):
+            return True
+
+        current_user = self.context.get('request').user
+        return UsersSubscribes.objects.filter(
+            user=current_user.id, subscribes=obj).exists()
+
 
 class UserCreateSerializer(ModelSerializer):
-
-    def create(self, validated_data):
-        validated_data['password'] = make_password(validated_data['password'])
-        return super().create(validated_data)
-
     class Meta:
         model = User
         fields = ('email', 'id', 'username',
@@ -72,9 +35,12 @@ class UserCreateSerializer(ModelSerializer):
         read_only_fields = ('id', 'is_subscribed')
         extra_kwargs = {'password': {'write_only': True}}
 
+    def create(self, validated_data):
+        validated_data['password'] = make_password(validated_data['password'])
+        return super().create(validated_data)
+
 
 class TagSerializer(ModelSerializer):
-
     color = Hex2NameColor()
 
     class Meta:
@@ -86,13 +52,13 @@ class TagSerializer(ModelSerializer):
 class IngredientSerializer(ModelSerializer):
     measurement_unit = SerializerMethodField()
 
-    def get_measurement_unit(self, obj):
-        return str(obj.measurement_unit)
-
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'measurement_unit',)
         read_only_fields = ('id', 'name', 'measurement_unit',)
+
+    def get_measurement_unit(self, obj):
+        return str(obj.measurement_unit)
 
 
 class IngredientInRecipeSerializer(ModelSerializer):
@@ -101,16 +67,16 @@ class IngredientInRecipeSerializer(ModelSerializer):
     name = SerializerMethodField()
     measurement_unit = SerializerMethodField()
 
+    class Meta:
+        model = IngredientInRecipe
+        fields = ('id', 'name', 'measurement_unit', 'amount')
+        read_only_fields = ('name', 'measurement_unit',)
+
     def get_name(self, obj):
         return obj.ingredient.name
 
     def get_measurement_unit(self, obj):
         return obj.ingredient.measurement_unit.measurement_unit
-
-    class Meta:
-        model = IngredientInRecipe
-        fields = ('id', 'name', 'measurement_unit', 'amount')
-        read_only_fields = ('name', 'measurement_unit',)
 
 
 class TagListField(PrimaryKeyRelatedField):
@@ -208,7 +174,6 @@ class RecipeSerializer(ModelSerializer):
 
 
 class SubRecipeSerializer(ModelSerializer):
-
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
