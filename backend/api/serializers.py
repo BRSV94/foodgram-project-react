@@ -1,9 +1,13 @@
 from django.contrib.auth.hashers import make_password
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from recipes.utils import recipe_create_or_update
-from rest_framework.serializers import (IntegerField, ModelSerializer,
+from rest_framework.serializers import (CharField,
+                                        IntegerField,
+                                        ModelSerializer,
                                         PrimaryKeyRelatedField,
-                                        SerializerMethodField, ValidationError)
+                                        ReadOnlyField, #?
+                                        SerializerMethodField,
+                                        ValidationError)
 from users.models import User, UsersSubscribes
 
 from .fields import Base64ImageField, Hex2NameColor
@@ -50,33 +54,38 @@ class TagSerializer(ModelSerializer):
 
 
 class IngredientSerializer(ModelSerializer):
-    measurement_unit = SerializerMethodField()
+    # measurement_unit = SerializerMethodField()
+    measurement_unit = CharField(source='measurement_unit')
 
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'measurement_unit',)
         read_only_fields = ('id', 'name', 'measurement_unit',)
 
-    def get_measurement_unit(self, obj):
-        return str(obj.measurement_unit)
+    # def get_measurement_unit(self, obj):
+    #     return str(obj.measurement_unit)
 
 
 class IngredientInRecipeSerializer(ModelSerializer):
     id = IntegerField()
     amount = IntegerField(min_value=1)
-    name = SerializerMethodField()
-    measurement_unit = SerializerMethodField()
+    # name = SerializerMethodField()
+    # measurement_unit = SerializerMethodField()
+    name = CharField(source='ingredient__name')
+    measurement_unit = CharField(
+        source='ingredient__measurement_unit__measurement_unit'
+    )
 
     class Meta:
         model = IngredientInRecipe
         fields = ('id', 'name', 'measurement_unit', 'amount')
         read_only_fields = ('name', 'measurement_unit',)
 
-    def get_name(self, obj):
-        return obj.ingredient.name
+    # def get_name(self, obj):
+    #     return obj.ingredient.name
 
-    def get_measurement_unit(self, obj):
-        return obj.ingredient.measurement_unit.measurement_unit
+    # def get_measurement_unit(self, obj):
+    #     return obj.ingredient.measurement_unit.measurement_unit
 
 
 class TagListField(PrimaryKeyRelatedField):
@@ -185,7 +194,7 @@ class SubscribesSerializer(UserSerializer):
         read_only=True,
         many=True,
     )
-    recipes_count = SerializerMethodField()
+    recipes_count = ReadOnlyField(source='recipes.count')
 
     class Meta:
         model = User
@@ -197,5 +206,5 @@ class SubscribesSerializer(UserSerializer):
                             'recipes_count')
         depth = 1
 
-    def get_recipes_count(self, obj):
-        return obj.recipes.count()
+    # def get_recipes_count(self, obj):
+    #     return obj.recipes.count()

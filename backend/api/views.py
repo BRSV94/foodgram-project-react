@@ -39,7 +39,7 @@ class CustomUserViewSet(UserViewSet):
         user = request.user
         obj, create = UsersSubscribes.objects.get_or_create(
             user=user
-        )
+        )  
         queryset = obj.subscribes.all()
         pages = self.paginate_queryset(queryset)
         serializer = SubscribesSerializer(
@@ -79,9 +79,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def favorite(self, request, *args, **kwargs):
-        model = Favorited
-        serializer = SubRecipeSerializer
-        return recipe_action(self, request, model, serializer)
+        return recipe_action(self, request, Favorited, SubRecipeSerializer)
 
     @action(
         detail=True,
@@ -89,9 +87,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,),
     )
     def shopping_cart(self, request, *args, **kwargs):
-        model = ShoppingCart
-        serializer = SubRecipeSerializer
-        return recipe_action(self, request, model, serializer)
+        return recipe_action(self, request, ShoppingCart, SubRecipeSerializer)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
