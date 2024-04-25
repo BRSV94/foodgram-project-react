@@ -1,13 +1,12 @@
 from django.contrib.auth.hashers import make_password
+
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from recipes.utils import recipe_create_or_update
-from rest_framework.serializers import (CharField,
-                                        IntegerField,
+from rest_framework.serializers import ReadOnlyField  # ?
+from rest_framework.serializers import (CharField, IntegerField,
                                         ModelSerializer,
                                         PrimaryKeyRelatedField,
-                                        ReadOnlyField, #?
-                                        SerializerMethodField,
-                                        ValidationError)
+                                        SerializerMethodField, ValidationError)
 from users.models import User, UsersSubscribes
 
 from .fields import Base64ImageField, Hex2NameColor
@@ -64,6 +63,22 @@ class IngredientSerializer(ModelSerializer):
 
     # def get_measurement_unit(self, obj):
     #     return str(obj.measurement_unit)
+
+
+# class IngredientInRecipeReadSerializer(ModelSerializer):
+#     id = IntegerField()
+#     amount = IntegerField()
+#     # name = SerializerMethodField()
+#     # measurement_unit = SerializerMethodField()
+#     name = CharField(source='ingredient__name')
+#     measurement_unit = CharField(
+#         source='ingredient__measurement_unit__measurement_unit'
+#     )
+
+#     class Meta:
+#         model = IngredientInRecipe
+#         fields = ('id', 'name', 'measurement_unit', 'amount')
+#         fields = ('name', 'measurement_unit',)
 
 
 class IngredientInRecipeSerializer(ModelSerializer):

@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+
 from djoser.views import UserViewSet
 from recipes.filters import RecipeFilter
 from recipes.models import Ingredient, Recipe, Tag

@@ -1,7 +1,8 @@
 import base64
 
-import webcolors
 from django.core.files.base import ContentFile
+
+import webcolors
 from rest_framework.serializers import Field, ImageField, ValidationError
 
 
