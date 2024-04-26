@@ -43,6 +43,8 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description='ингредиенты')
     def ingredients(self, obj):
+        print(obj.instance.ingredients.all())
+        print(obj.instance.ingredients)
         return ', '.join(
             [str(ingredient) for ingredient in obj.instance.ingredients.all()]
         ) or None
