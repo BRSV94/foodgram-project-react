@@ -26,8 +26,12 @@ class UserAdmin(UserAdmin):
         if subscribe_obj := obj.subscriber:
             print('LOLOELKEKEKELOLOL')
             print(subscribe_obj.instance.__dict__)
-            print(subscribe_obj.instance.subscribes.__dict__)
-            return subscribe_obj.subscribes
+            print(1)
+            print(subscribe_obj.instance.subscribes.all())
+            print(2)
+            print(subscribe_obj.instance.subscribes.count())
+            print(3)
+            return subscribe_obj.instance.subscribes
         print(obj)
         print(obj.subscriber)
         # print(obj.subscriber.subscribes.count())
