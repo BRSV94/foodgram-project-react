@@ -11,6 +11,7 @@ class UserAdmin(UserAdmin):
         'username',
         'first_name',
         'last_name',
+        'subscribes_count'
         'email',
     )
     list_filter = (
@@ -19,6 +20,10 @@ class UserAdmin(UserAdmin):
         'last_name',
         'email',
     )
+
+    @admin.display(description='кол-во подписчиков')
+    def subscribes_count(self, obj):
+        return obj.subscriber.subscribes.count()
 
 
 @admin.register(UsersSubscribes)
