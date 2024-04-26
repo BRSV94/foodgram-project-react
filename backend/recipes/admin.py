@@ -44,12 +44,12 @@ class RecipeAdmin(admin.ModelAdmin):
     @admin.display(description='ингредиенты')
     def ingredients(self, obj):
         return ', '.join(
-            [str(ingredient) for ingredient in obj.ingredients.all()]
+            [str(ingredient) for ingredient in obj.instance.ingredients.all()]
         ) or None
 
     @admin.display(description='тэги')
     def tags(self, obj):
-        return ', '.join([tag.name for tag in obj.tags.all()]) or None
+        return ', '.join([tag.name for tag in obj.instance.tags.all()]) or None
 
 
 @admin.register(Ingredient)
