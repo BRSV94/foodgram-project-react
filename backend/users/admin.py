@@ -26,6 +26,7 @@ class UserAdmin(UserAdmin):
         if subscribe_obj := obj.subscriber:
             print('LOLOELKEKEKELOLOL')
             print(subscribe_obj.instance.__dict__)
+            print(subscribe_obj.instance.subscribes.__dict__)
             return subscribe_obj.subscribes
         print(obj)
         print(obj.subscriber)
