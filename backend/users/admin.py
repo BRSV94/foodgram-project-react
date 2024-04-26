@@ -27,6 +27,7 @@ class UserAdmin(UserAdmin):
             return subscribe_obj.instance.subscribes.count()
         return 0
 
+
 @admin.register(UsersSubscribes)
 class SubscribeAdmin(admin.ModelAdmin):
     list_display = (
