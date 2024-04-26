@@ -23,6 +23,8 @@ class UserAdmin(UserAdmin):
 
     @admin.display(description='кол-во подписчиков')
     def subscribes_count(self, obj):
+        print(obj.subscriber.subscribes.all())
+        print(obj.subscriber.subscribes.count())
         return obj.subscriber.subscribes.count()
 
 
