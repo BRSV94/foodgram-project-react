@@ -23,10 +23,10 @@ class UserAdmin(UserAdmin):
 
     @admin.display(description='кол-во подписчиков')
     def subscribes_count(self, obj):
-        obj.subscriber.instance.subscribes.count()
-        # if subscribe_obj := obj.subscriber:
-        #     return subscribe_obj.instance.subscribes.count()
-        # return 0
+        # obj.subscriber.instance.subscribes.count()
+        if subscribe_obj := obj.subscriber:
+            return subscribe_obj.instance.subscribes.count()
+        return 0
 
 @admin.register(UsersSubscribes)
 class SubscribeAdmin(admin.ModelAdmin):
