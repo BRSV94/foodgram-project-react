@@ -46,7 +46,6 @@ class SubscribeAdmin(admin.ModelAdmin):
 
     @admin.display(description='подписчики')
     def subscribes_list(self, obj):
-        obj.subscribes.count()
         return ', '.join([suscribe for suscribe in obj.subscribes.all()]) or None
 
 
