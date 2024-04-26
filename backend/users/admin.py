@@ -33,7 +33,7 @@ class SubscribeAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'user',
-        'subscribes',
+        'subscribes_list',
 
     )
     list_filter = (
@@ -43,6 +43,11 @@ class SubscribeAdmin(admin.ModelAdmin):
     filter_horizontal = (
         'subscribes',
     )
+
+    @admin.display(description='подписчики')
+    def subscribes_list(self, obj):
+        obj.subscribes.count()
+        return ', '.join([suscribe for suscribe in obj.subscribes.count()]) or None
 
 
 @admin.register(Favorited)
