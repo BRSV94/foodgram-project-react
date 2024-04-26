@@ -26,8 +26,8 @@ class RecipeAdmin(admin.ModelAdmin):
         'id',
         'name',
         'author',
-        'ingredients',
-        'tags',
+        'ingredients_list',
+        'tags_list',
     )
     list_filter = (
         'name',
@@ -42,7 +42,7 @@ class RecipeAdmin(admin.ModelAdmin):
     )
 
     @admin.display(description='ингредиенты')
-    def ingredients(self, obj):
+    def ingredients_list(self, obj):
         print(obj.instance.ingredients.all())
         print(obj.instance.ingredients)
         return ', '.join(
@@ -50,8 +50,8 @@ class RecipeAdmin(admin.ModelAdmin):
         ) or None
 
     @admin.display(description='тэги')
-    def tags(self, obj):
-        return ', '.join([tag.name for tag in obj.instance.tags.all()]) or None
+    def tags_list(self, obj):
+        return ', '.join([tag.name for tag in obj.tags.all()]) or None
 
 
 @admin.register(Ingredient)
