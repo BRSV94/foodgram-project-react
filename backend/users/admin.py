@@ -23,11 +23,11 @@ class UserAdmin(UserAdmin):
 
     @admin.display(description='кол-во подписчиков')
     def subscribes_count(self, obj):
-        # if subscribe_obj := :
-        print('LOLOELKEKEKELOLOL')
+        if subscribe_obj := obj.subscriber:
+            print('LOLOELKEKEKELOLOL')
+            return subscribe_obj.subscribes.count()
         print(obj)
         print(obj.subscriber)
-        return obj.subscriber.subscribes.count()
         # print(obj.subscriber.subscribes.count())
         # return obj.subscriber.subscribes.count()
         return 0
