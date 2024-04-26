@@ -9,13 +9,16 @@ from recipes.utils import recipe_action, subscribe_action
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from rest_framework.serializers import ValidationError
 from users.models import Favorited, ShoppingCart, UsersSubscribes
 from users.utils import create_shopping_cart
 
-from .serializers import (IngredientSerializer, RecipeSerializer,
-                          SubRecipeSerializer, SubscribesSerializer,
+from .serializers import (IngredientSerializer,
+                          RecipeReadSerializer,
+                          RecipeWriteSerializer,
+                          SubRecipeSerializer,
+                          SubscribesSerializer,
                           TagSerializer)
 
 
@@ -53,9 +56,14 @@ class CustomUserViewSet(UserViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
+    # serializer_class = RecipeSerializer
     filterset_class = RecipeFilter
     permission_classes = (IsAuthorOrReadOnly,)
+
+    def get_serializer_class(self):
+        if self.request.method in SAFE_METHODS:
+            return RecipeReadSerializer
+        return RecipeWriteSerializer
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
