@@ -25,7 +25,7 @@ class UserAdmin(UserAdmin):
     def subscribes_count(self, obj):
         # if subscribe_obj := :
         print('LOLOELKEKEKELOLOL')
-        print(obj.subscriber.subscribes)
+        print(obj.subscriber)
         return obj.subscriber.subscribes.count()
         # print(obj.subscriber.subscribes.count())
         # return obj.subscriber.subscribes.count()
