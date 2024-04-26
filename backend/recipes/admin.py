@@ -43,10 +43,10 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description='ингредиенты')
     def ingredients_list(self, obj):
-        print(obj.instance.ingredients.all())
-        print(obj.instance.ingredients)
+        # print(obj.instance.ingredients.all())
+        # print(obj.instance.ingredients)
         return ', '.join(
-            [str(ingredient) for ingredient in obj.instance.ingredients.all()]
+            [str(ingredient) for ingredient in obj.ingredients.all()]
         ) or None
 
     @admin.display(description='тэги')
