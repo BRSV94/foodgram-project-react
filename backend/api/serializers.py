@@ -147,7 +147,7 @@ class RecipeReadSerializer(ModelSerializer):
 
 class RecipeWriteSerializer(ModelSerializer):
     # tags = TagListField(queryset=Tag.objects.all(), many=True)
-    tags = PrimaryKeyRelatedField(many=True)
+    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     author = UserSerializer(read_only=True) # Read only?
     ingredients = IngredientInRecipeSerializer(many=True)
     # ingredients = IngredientInRecipeWriteSerializer(many=True)
