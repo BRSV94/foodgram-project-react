@@ -24,18 +24,7 @@ class UserAdmin(UserAdmin):
     @admin.display(description='кол-во подписчиков')
     def subscribes_count(self, obj):
         if subscribe_obj := obj.subscriber:
-            print('LOLOELKEKEKELOLOL')
-            print(subscribe_obj.instance.__dict__)
-            print(1)
-            print(subscribe_obj.instance.subscribes.all())
-            print(2)
-            print(subscribe_obj.instance.subscribes.count())
-            print(3)
-            return subscribe_obj.instance.subscribes
-        print(obj)
-        print(obj.subscriber)
-        # print(obj.subscriber.subscribes.count())
-        # return obj.subscriber.subscribes.count()
+            return subscribe_obj.instance.subscribes.count()
         return 0
 
 @admin.register(UsersSubscribes)
