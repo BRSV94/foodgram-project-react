@@ -82,7 +82,8 @@ class IngredientSerializer(ModelSerializer):
 
 
 class IngredientInRecipeSerializer(ModelSerializer): # Зачем разделять? Разберись.
-    id = PrimaryKeyRelatedField(queryset=IngredientInRecipe.objects.all()) # А тут id какой модели?
+    # id = PrimaryKeyRelatedField(queryset=IngredientInRecipe.objects.all()) # А тут id какой модели?
+    id = IntegerField() 
     amount = IntegerField()
     name = SerializerMethodField()
     measurement_unit = SerializerMethodField()
