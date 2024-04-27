@@ -56,7 +56,7 @@ class CustomUserViewSet(UserViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.all().order_by('-created_at')
+    queryset = Recipe.objects.all()
     # serializer_class = RecipeSerializer
     filterset_class = RecipeFilter
     permission_classes = (IsAuthorOrReadOnly,)
