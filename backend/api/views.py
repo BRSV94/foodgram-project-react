@@ -15,7 +15,7 @@ from users.models import Favorited, ShoppingCart, UsersSubscribes
 from users.utils import create_shopping_cart
 
 from .serializers import (IngredientSerializer,
-                        #   RecipeSerializer,
+                          RecipeSerializer,
                           RecipeReadSerializer,
                           RecipeWriteSerializer,
                           SubRecipeSerializer,
@@ -57,14 +57,14 @@ class CustomUserViewSet(UserViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    # serializer_class = RecipeSerializer
+    serializer_class = RecipeSerializer
     filterset_class = RecipeFilter
     permission_classes = (IsAuthorOrReadOnly,)
 
-    def get_serializer_class(self):
-        if self.request.method in SAFE_METHODS:
-            return RecipeReadSerializer
-        return RecipeWriteSerializer
+    # def get_serializer_class(self):
+    #     if self.request.method in SAFE_METHODS:
+    #         return RecipeReadSerializer
+    #     return RecipeWriteSerializer
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
