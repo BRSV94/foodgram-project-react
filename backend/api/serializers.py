@@ -89,7 +89,7 @@ class IngredientInRecipeSerializer(ModelSerializer): # Зачем разделя
     # measurement_unit = SerializerMethodField()
     name = CharField(source='ingredient.name')
     measurement_unit = CharField(
-        source='ingredient__measurement_unit__measurement_unit'
+        source='ingredient.measurement_unit.measurement_unit'
     )
 
     class Meta:
