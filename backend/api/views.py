@@ -45,9 +45,8 @@ class CustomUserViewSet(UserViewSet):
         # obj, create = UsersSubscribes.objects.get_or_create(
         #     user=user
         # )
-        queryset = []
-        if (obj := UsersSubscribes.objects.get(user=user)):
-            queryset = obj.subscribes.all()
+        obj = UsersSubscribes.objects.filter(user=user).first()
+        queryset = obj if obj else []
         pages = self.paginate_queryset(queryset)
         serializer = SubscribesSerializer(
             pages,
