@@ -46,7 +46,7 @@ class CustomUserViewSet(UserViewSet):
         #     user=user
         # )
         queryset = []
-        if (obj := UsersSubscribes.objects.filter(user=user)):
+        if (obj := UsersSubscribes.objects.get(user=user)):
             queryset = obj.subscribes.all()
         pages = self.paginate_queryset(queryset)
         serializer = SubscribesSerializer(
