@@ -51,6 +51,12 @@ class TagSerializer(ModelSerializer):
         fields = ('id', 'name', 'color', 'slug',)
         read_only_fields = ('name', 'color', 'slug',)
 
+    def validate_id(self, value):
+        if not Tag.objects.filter(id=value).exists():
+            raise ValidationError(
+                "Тэга с таким id не существует.")
+        return value
+
 
 class IngredientSerializer(ModelSerializer):
     # measurement_unit = SerializerMethodField()
@@ -60,7 +66,19 @@ class IngredientSerializer(ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'measurement_unit',)
-        read_only_fields = ('id', 'name', 'measurement_unit',)
+        read_only_fields = ('name', 'measurement_unit',)
+
+    def validate_id(self, value):
+        if not Ingredient.objects.filter(id=value).exists():
+            raise ValidationError(
+                "Ингредиента с таким id не существует.")
+        return value
+    
+    def validate_amount(self, value):
+        if type(value) != int or value < 1:
+            raise ValidationError(
+                "Кол-во ингредиента должно быть числом большим нуля.")
+
 
     # def get_measurement_unit(self, obj):
     #     return str(obj.measurement_unit)
@@ -193,29 +211,28 @@ class RecipeWriteSerializer(ModelSerializer):
         if not ingredients:
             raise ValidationError(
                 "Необходимо указать ингредиенты.")
-        ing_ids = []
-        for ingredient in ingredients:
-            print('LOL'*90)
-            print(ingredient)
-            if not ingredient['id'] or not ingredient['amount']:
-                raise ValidationError(
-                    "Некорректные данные ингредиентов.")
-            # if not ingredient['amount']:
-            #     raise ValidationError(
-            #         "Нет данных о кол-ве ингредиентов.")
-            if ingredient['id'] in ing_ids:
-                raise ValidationError(
-                    "Ингредиенты не могут повторяться.")
-            ing_ids.append(ingredient['id'])
-            if not Ingredient.objects.filter(
-                id=ingredient['id']
-            ).exists():
-                raise ValidationError(
-                    "Ингредиента с таким id не существует.")
-            if int(ingredient['amount']) < 1:
-                raise ValidationError(
-                    "Кол-во ингредиента не может быть меньше, чем 1.")
+        if ingredients and len(ingredients) != len(set(ingredients)):
+            raise ValidationError(
+                "Ингредиенты не могут повторяться.")
         return ingredients
+        # ing_ids = []
+        # for ingredient in ingredients:
+            # if not ingredient['id'] or not ingredient['amount']:
+            #     raise ValidationError(
+            #         "Некорректные данные ингредиентов.")
+            # if ingredient['id'] in ing_ids:
+            #     raise ValidationError(
+            #         "Ингредиенты не могут повторяться.")
+            # ing_ids.append(ingredient['id'])
+            # if not Ingredient.objects.filter(
+            #     id=ingredient['id']
+            # ).exists():
+            #     raise ValidationError(
+            #         "Ингредиента с таким id не существует.")
+            # if int(ingredient['amount']) < 1:
+            #     raise ValidationError(
+            #         "Кол-во ингредиента не может быть меньше, чем 1.")
+        # return ingredients
 
     def validate_tags(self, tags):
         if not tags:
