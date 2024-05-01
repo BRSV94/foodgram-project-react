@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 
 from .models import (Ingredient, IngredientInRecipe, MeasurementUnit, Recipe,
                      Tag)
@@ -96,11 +97,18 @@ class TagsAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'slug',
+        'color',
     )
     list_filter = (
         'name',
         'slug',
     )
+
+    def color(self, obj):
+        # Пример использования format_html для форматирования HTML-кода
+        return format_html('<span style="color: blue;">{}</span>', obj.some_field)
+
+    color.short_description = 'цвет'
 
 
 @admin.register(MeasurementUnit)
