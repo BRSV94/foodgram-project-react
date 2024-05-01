@@ -195,6 +195,8 @@ class RecipeWriteSerializer(ModelSerializer):
                 "Необходимо указать ингредиенты.")
         ing_ids = []
         for ingredient in ingredients:
+            print('LOL'*90)
+            print(ingredient)
             if not ingredient['id'] or not ingredient['amount']:
                 raise ValidationError(
                     "Некорректные данные ингредиентов.")
