@@ -165,6 +165,7 @@ class RecipeWriteSerializer(ModelSerializer):
         model = Recipe
         fields = (
             'tags',
+            'author',
             'ingredients',
             'name',
             'image',
