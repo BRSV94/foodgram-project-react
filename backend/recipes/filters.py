@@ -42,9 +42,9 @@ class RecipeFilter(FilterSet):
     
     def filter_boolean_field(self, queryset, name, value):
         user = self.request.user
+        
         print('LOL'*99)
-        print(__name__)
-        print(self.__name__)
+        print(name)
         if value and not user.is_anonymous:
             filter_kwargs = {f'{self.extra_param}__user': user}
             return queryset.filter(**filter_kwargs)
