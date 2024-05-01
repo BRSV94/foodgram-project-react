@@ -68,17 +68,6 @@ class IngredientSerializer(ModelSerializer):
         fields = ('id', 'name', 'measurement_unit',)
         read_only_fields = ('name', 'measurement_unit',)
 
-    def validate_id(self, value):
-        if not Ingredient.objects.filter(id=value).exists():
-            raise ValidationError(
-                "Ингредиента с таким id не существует.")
-        return value
-    
-    def validate_amount(self, value):
-        if type(value) != int or value < 1:
-            raise ValidationError(
-                "Кол-во ингредиента должно быть числом большим нуля.")
-
 
     # def get_measurement_unit(self, obj):
     #     return str(obj.measurement_unit)
@@ -109,8 +98,19 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
     class Meta:
         model = IngredientInRecipe
         fields = ('id', 'name', 'measurement_unit', 'amount')
-        
-        
+
+    def validate_id(self, value):
+        if not Ingredient.objects.filter(id=value).exists():
+            raise ValidationError(
+                "Ингредиента с таким id не существует.")
+        return value
+
+    def validate_amount(self, value):
+        if type(value) != int or value < 1:
+            raise ValidationError(
+                "Кол-во ингредиента должно быть числом большим нуля.")
+
+
 class IngredientInRecipeWriteSerializer(ModelSerializer):
     id = IntegerField()
 
@@ -263,7 +263,6 @@ class RecipeWriteSerializer(ModelSerializer):
             raise ValidationError(
                 "Тэги не могут повторяться.")
         return tags
-
 
 
 # class RecipeSerializer(ModelSerializer):
