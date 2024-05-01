@@ -42,11 +42,14 @@ class RecipeFilter(FilterSet):
     
     def filter_boolean_field(self, queryset, name, value):
         user = self.request.user
-        
+        field_params = {
+            'is_favorited': 'favoristes',
+            'is_in_shopping_cart': 'in_shopping_cart'
+        }
         print('LOL'*99)
         print(name)
         if value and not user.is_anonymous:
-            filter_kwargs = {f'{self.extra_param}__user': user}
+            filter_kwargs = {f'{field_params[name]}__user': user}
             return queryset.filter(**filter_kwargs)
         return queryset
     
