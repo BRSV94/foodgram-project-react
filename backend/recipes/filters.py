@@ -43,16 +43,14 @@ class RecipeFilter(FilterSet):
     def filter_boolean_field(self, queryset, name, value):
         user = self.request.user
         field_params = {
-            'is_favorited': 'favoristes',
+            'is_favorited': 'favorite_in',
             'is_in_shopping_cart': 'in_shopping_cart'
         }
-        print('LOL'*99)
-        print(name)
         if value and not user.is_anonymous:
             filter_kwargs = {f'{field_params[name]}__user': user}
             return queryset.filter(**filter_kwargs)
         return queryset
-    
+
 
 class IngredientFilter(FilterSet):
     # name = filters.CharFilter(lookup_expr='startswith')
