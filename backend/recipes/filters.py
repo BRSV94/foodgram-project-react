@@ -40,12 +40,12 @@ class RecipeFilter(FilterSet):
             return queryset.filter(shopping_cart__user=user)
         return queryset
     
-    def filter_boolean_field(self, queryset, name, value, extra_param):
-        user = self.request.user
-        if value and not user.is_anonymous:
-            filter_kwargs = {f'{extra_param}__user': user}
-            return queryset.filter(**filter_kwargs)
-        return queryset
+    # def filter_boolean_field(self, queryset, name, value, extra_param):
+    #     user = self.request.user
+    #     if value and not user.is_anonymous:
+    #         filter_kwargs = {f'{extra_param}__user': user}
+    #         return queryset.filter(**filter_kwargs)
+    #     return queryset
     
 
 class IngredientFilter(FilterSet):
