@@ -16,12 +16,12 @@ class RecipeFilter(FilterSet):
     is_favorited = filters.BooleanFilter(
         # method='filter_is_favorited's
         method='filter_boolean_field',
-        extra_param='favorites',
+        # extra_param='favorites',
     )
     is_in_shopping_cart = filters.BooleanFilter(
         # method='filter_is_in_shopping_cart'
         method='filter_boolean_field',
-        extra_param='shopping_cart',
+        # extra_param='shopping_cart',
     )
 
     class Meta:
@@ -42,6 +42,9 @@ class RecipeFilter(FilterSet):
     
     def filter_boolean_field(self, queryset, name, value):
         user = self.request.user
+        print('LOL'*99)
+        print(__name__)
+        print(self.__name__)
         if value and not user.is_anonymous:
             filter_kwargs = {f'{self.extra_param}__user': user}
             return queryset.filter(**filter_kwargs)
