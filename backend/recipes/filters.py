@@ -14,7 +14,7 @@ class RecipeFilter(FilterSet):
         field_name='tags__slug',
     )
     is_favorited = filters.BooleanFilter(
-        # method='filter_is_favorited'
+        # method='filter_is_favorited's
         method='filter_boolean_field',
         extra_param='favorites',
     )
@@ -40,10 +40,10 @@ class RecipeFilter(FilterSet):
     #         return queryset.filter(shopping_cart__user=user)
     #     return queryset
     
-    def filter_boolean_field(self, queryset, name, value, extra_param):
+    def filter_boolean_field(self, queryset, name, value):
         user = self.request.user
         if value and not user.is_anonymous:
-            filter_kwargs = {f'{extra_param}__user': user}
+            filter_kwargs = {f'{self.extra_param}__user': user}
             return queryset.filter(**filter_kwargs)
         return queryset
     
