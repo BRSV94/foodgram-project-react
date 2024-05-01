@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import Group
+from rest_framework.authtoken.models import TokenProxy
 
 from .models import Favorited, ShoppingCart, User, UsersSubscribes
 
@@ -72,3 +74,6 @@ class ShoppingCartdAdmin(admin.ModelAdmin):
     filter_horizontal = (
         'recipes',
     )
+
+admin.site.unregister(Group)
+admin.site.unregister(TokenProxy) 

@@ -1,26 +1,28 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from foodgram.settings import EMAIL_MAX_LENGTH, USERS_FIELDS_MAX_LENGTH
+
 
 class User(AbstractUser):
     email = models.EmailField(
-        max_length=254,
+        max_length=EMAIL_MAX_LENGTH,
         blank=False,
         verbose_name='Email',
         unique=True,
     )
     first_name = models.CharField(
-        max_length=150,
+        max_length=USERS_FIELDS_MAX_LENGTH,
         blank=False,
         verbose_name='Имя'
     )
     last_name = models.CharField(
-        max_length=150,
+        max_length=USERS_FIELDS_MAX_LENGTH,
         blank=False,
         verbose_name='Фамилия'
     )
     password = models.CharField(
-        max_length=150,
+        max_length=USERS_FIELDS_MAX_LENGTH,
         blank=False,
         verbose_name='Пароль'
     )

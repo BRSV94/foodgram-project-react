@@ -96,9 +96,6 @@ class IngredientsInRecipeAdmin(admin.ModelAdmin):
 
 @admin.register(Tag)
 class TagsAdmin(admin.ModelAdmin):
-    color = {
-        Hex2NameColor: {'widget': ColorPickerWidget}
-    }
     list_display = (
         'name',
         'slug',
@@ -108,11 +105,6 @@ class TagsAdmin(admin.ModelAdmin):
         'name',
         'slug',
     )
-
-    # def color(self, obj):
-    #     return format_html('<span style="color: blue;">{}</span>', obj.some_field)
-
-    # color.short_description = 'цвет'
 
 
 @admin.register(MeasurementUnit)

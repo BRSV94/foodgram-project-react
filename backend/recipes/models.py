@@ -1,13 +1,19 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import (MinValueValidator,
+                                    MaxValueValidator,
+                                    RegexValidator)
 from django.db import models
+
+from foodgram.settings import (RECIPES_MAX_LENGTH,
+                               MIN_POSITIVE_VALUE,
+                               MAX_POSITIVE_VALUE)
 
 User = get_user_model()
 
 
 class Tag(models.Model):
     name = models.CharField(
-        max_length=200,
+        max_length=RECIPES_MAX_LENGTH,
         blank=False,
         verbose_name='Тэг',
     )
@@ -16,17 +22,24 @@ class Tag(models.Model):
         blank=False,
         null=True,
         verbose_name='Цвет',
+        validators=[
+            RegexValidator(
+                regex='^#[0-9]{6}$',
+                message=('Цвет должен быть указан в формате '
+                         '"#XXXXXX", где "X" - любая цифра.'),
+            ),
+        ],
     )
-    slug = models.CharField(
-        max_length=200,
+    slug = models.Color(
+        max_length=RECIPES_MAX_LENGTH,
         blank=False,
         unique=True,
         null=True,
         validators=[
             RegexValidator(
                 regex=r'^[-a-zA-Z0-9_]+$',
-                message=('Slug can only contain letters'
-                         'and digits characters.'),
+                message=('Slug может содержать только'
+                         'буквенные и цифровые символы.'),
             ),
         ],
     )
@@ -42,7 +55,7 @@ class Tag(models.Model):
 
 class MeasurementUnit(models.Model):
     measurement_unit = models.CharField(
-        max_length=200,
+        max_length=RECIPES_MAX_LENGTH,
         verbose_name='Единицы измерения',
     )
 
@@ -57,7 +70,7 @@ class MeasurementUnit(models.Model):
 
 class Ingredient(models.Model):
     name = models.CharField(
-        max_length=200,
+        max_length=RECIPES_MAX_LENGTH,
         verbose_name='Ингридиент',
     )
     measurement_unit = models.ForeignKey(
@@ -85,7 +98,7 @@ class Recipe(models.Model):
         null=True,
     )
     name = models.CharField(
-        max_length=200,
+        max_length=RECIPES_MAX_LENGTH,
         verbose_name='Название рецепта',
     )
     image = models.ImageField(
@@ -109,7 +122,7 @@ class Recipe(models.Model):
         verbose_name='Тэги',
     )
     cooking_time = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1)],
+        validators=[MinValueValidator(MIN_POSITIVE_VALUE)],
         verbose_name='Время приготовления в мин.',
         null=False,
         help_text=('Время приготовления должно быть указано в минутах. '
@@ -136,7 +149,10 @@ class IngredientInRecipe(models.Model):
         related_name='ingredient_in_recipe',
     )
     amount = models.PositiveIntegerField(
-        validators=[MinValueValidator(1)]
+        validators=[
+            MinValueValidator(MIN_POSITIVE_VALUE),
+            MaxValueValidator(MAX_POSITIVE_VALUE),
+        ]
     )
 
     class Meta:
