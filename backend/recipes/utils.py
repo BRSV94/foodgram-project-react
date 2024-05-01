@@ -113,7 +113,8 @@ def recipe_create_or_update(self, validated_data, recipe):
     for ingredient_data in ingredients_data:
         ing_id = ingredient_data['id']
         ing_amount = ingredient_data['amount']
-        ingredient = Ingredient.objects.get(id=ing_id)
+        ingredient = get_object_or_404(Ingredient, id=ing_id)
+        # ingredient = Ingredient.objects.get_obj(id=ing_id)
         ing_in_recipe, create = IngredientInRecipe.objects.get_or_create(
             ingredient=ingredient,
             amount=ing_amount,
