@@ -99,11 +99,11 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
         model = IngredientInRecipe
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
-    # def validate_id(self, value):
-    #     if not Ingredient.objects.filter(id=value).exists():
-    #         raise ValidationError(
-    #             "Ингредиента с таким id не существует.")
-    #     return value
+    def validate_id(self, value):
+        if not Ingredient.objects.filter(id=value).exists():
+            raise ValidationError(
+                "Ингредиента с таким id не существует.")
+        return value
 
     def validate_amount(self, value):
         if type(value) != int or value < 1:
