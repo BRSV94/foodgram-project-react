@@ -1,8 +1,10 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import (Ingredient, IngredientInRecipe, MeasurementUnit, Recipe,
-                     Tag)
+from api.fields import Hex2NameColor
+from .models import (Ingredient, IngredientInRecipe,
+                     MeasurementUnit, Recipe, Tag)
+from .widgets import ColorPickerWidget
 
 
 class TagsInline(admin.TabularInline):
@@ -94,6 +96,9 @@ class IngredientsInRecipeAdmin(admin.ModelAdmin):
 
 @admin.register(Tag)
 class TagsAdmin(admin.ModelAdmin):
+    color = {
+        Hex2NameColor: {'widget': ColorPickerWidget}
+    }
     list_display = (
         'name',
         'slug',
@@ -104,11 +109,10 @@ class TagsAdmin(admin.ModelAdmin):
         'slug',
     )
 
-    def color(self, obj):
-        # Пример использования format_html для форматирования HTML-кода
-        return format_html('<span style="color: blue;">{}</span>', obj.some_field)
+    # def color(self, obj):
+    #     return format_html('<span style="color: blue;">{}</span>', obj.some_field)
 
-    color.short_description = 'цвет'
+    # color.short_description = 'цвет'
 
 
 @admin.register(MeasurementUnit)
