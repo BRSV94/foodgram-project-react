@@ -99,13 +99,8 @@ class IngredientSerializer(ModelSerializer):
 #         fields = ('id', 'name', 'measurement_unit', 'amount')
 #         fields = ('name', 'measurement_unit',)
 
-
-class IngredientInRecipeSerializer(ModelSerializer): # Зачем разделять? Разберись.
-    # id = PrimaryKeyRelatedField(queryset=IngredientInRecipe.objects.all()) # А тут id какой модели?
+class IngredientInRecipeReadSerializer(ModelSerializer):
     id = ReadOnlyField(source='ingredient.id') 
-    amount = IntegerField()
-    # name = SerializerMethodField()
-    # measurement_unit = SerializerMethodField()
     name = ReadOnlyField(source='ingredient.name')
     measurement_unit = ReadOnlyField(
         source='ingredient.measurement_unit.measurement_unit'
@@ -114,7 +109,31 @@ class IngredientInRecipeSerializer(ModelSerializer): # Зачем разделя
     class Meta:
         model = IngredientInRecipe
         fields = ('id', 'name', 'measurement_unit', 'amount')
-        read_only_fields = ('name', 'measurement_unit',)
+        
+        
+class IngredientInRecipeWriteSerializer(ModelSerializer):
+    id = IntegerField()
+
+    class Meta:
+        model = IngredientInRecipe
+        fields = ('id', 'amount')
+
+
+# class IngredientInRecipeSerializer(ModelSerializer): # Зачем разделять? Разберись.
+#     # id = PrimaryKeyRelatedField(queryset=IngredientInRecipe.objects.all()) # А тут id какой модели?
+#     id = ReadOnlyField(source='ingredient.id') 
+#     amount = IntegerField()
+#     # name = SerializerMethodField()
+#     # measurement_unit = SerializerMethodField()
+#     name = ReadOnlyField(source='ingredient.name')
+#     measurement_unit = ReadOnlyField(
+#         source='ingredient.measurement_unit.measurement_unit'
+#     )
+
+#     class Meta:
+#         model = IngredientInRecipe
+#         fields = ('id', 'name', 'measurement_unit', 'amount')
+#         read_only_fields = ('name', 'measurement_unit',)
 
     # def get_name(self, obj):
     #     return obj.ingredient.name
@@ -133,7 +152,7 @@ class RecipeReadSerializer(ModelSerializer):
     # tags = TagListField(queryset=Tag.objects.all(), many=True)
     tags = TagSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
-    ingredients = IngredientInRecipeSerializer(many=True)
+    ingredients = IngredientInRecipeReadSerializer(many=True)
     # ingredients = IngredientInRecipeReadSerializer(many=True)
     is_favorited = SerializerMethodField(read_only=True)
     is_in_shopping_cart = SerializerMethodField(read_only=True)
@@ -174,7 +193,7 @@ class RecipeWriteSerializer(ModelSerializer):
     # tags = TagListField(queryset=Tag.objects.all(), many=True)
     tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     author = UserSerializer(read_only=True) # Read only?
-    ingredients = IngredientInRecipeSerializer(many=True)
+    ingredients = IngredientInRecipeWriteSerializer(many=True)
     # ingredients = IngredientInRecipeWriteSerializer(many=True)
     image = Base64ImageField()
 
