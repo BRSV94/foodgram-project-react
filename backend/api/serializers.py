@@ -197,9 +197,12 @@ class RecipeWriteSerializer(ModelSerializer):
         for ingredient in ingredients:
             print('LOL'*90)
             print(ingredient)
-            if not ingredient['id'] or not ingredient['amount']:
+            # if not ingredient['id'] or not ingredient['amount']:
+            #     raise ValidationError(
+            #         "Некорректные данные ингредиентов.")
+            if not ingredient['amount']:
                 raise ValidationError(
-                    "Некорректные данные ингредиентов.")
+                    "Нет данных о кол-ве ингредиентов.")
             if ingredient['id'] in ing_ids:
                 raise ValidationError(
                     "Ингредиенты не могут повторяться.")
