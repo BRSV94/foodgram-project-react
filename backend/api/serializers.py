@@ -54,7 +54,8 @@ class TagSerializer(ModelSerializer):
 
 class IngredientSerializer(ModelSerializer):
     # measurement_unit = SerializerMethodField()
-    measurement_unit = CharField(source='measurement_unit')
+    # measurement_unit = CharField(source='measurement_unit')
+    measurement_unit = CharField()
 
     class Meta:
         model = Ingredient
