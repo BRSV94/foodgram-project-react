@@ -232,7 +232,7 @@ class RecipeWriteSerializer(ModelSerializer):
                 "Необходимо указать ингредиенты.")
         ingredients_list = [ingredient.id for ingredient in ingredients]
         print(ingredients_list)
-        if len(list(ingredients_list)) != len(set(ingredients_list)):
+        if len(ingredients_list) != len(set(ingredients_list)):
             raise ValidationError(
                 "Ингредиенты не могут повторяться.")
         return ingredients
