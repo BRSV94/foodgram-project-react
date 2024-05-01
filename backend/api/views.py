@@ -42,9 +42,6 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscriptions(self, request, *args, **kwargs):
         user = request.user
-        # obj, create = UsersSubscribes.objects.get_or_create(
-        #     user=user
-        # )
         obj = UsersSubscribes.objects.filter(user=user).first()
         queryset = obj.subscribes.all() if obj else []
         pages = self.paginate_queryset(queryset)
