@@ -99,6 +99,14 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
         model = IngredientInRecipe
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
+
+class IngredientInRecipeWriteSerializer(ModelSerializer):
+    id = IntegerField()
+
+    class Meta:
+        model = IngredientInRecipe
+        fields = ('id', 'amount')
+
     def validate_id(self, value):
         if not Ingredient.objects.filter(id=value).exists():
             raise ValidationError(
@@ -109,14 +117,6 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
         if type(value) != int or value < 1:
             raise ValidationError(
                 "Кол-во ингредиента должно быть числом большим нуля.")
-
-
-class IngredientInRecipeWriteSerializer(ModelSerializer):
-    id = IntegerField()
-
-    class Meta:
-        model = IngredientInRecipe
-        fields = ('id', 'amount')
 
 
 # class IngredientInRecipeSerializer(ModelSerializer): # Зачем разделять? Разберись.
