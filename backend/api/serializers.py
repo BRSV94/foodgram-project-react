@@ -212,6 +212,7 @@ class RecipeWriteSerializer(ModelSerializer):
             raise ValidationError(
                 "Необходимо указать ингредиенты.")
         ingredients_list = [ingredient for ingredient in ingredients]
+        print(ingredients_list)
         if len(list(ingredients_list)) != len(set(ingredients_list)):
             raise ValidationError(
                 "Ингредиенты не могут повторяться.")
