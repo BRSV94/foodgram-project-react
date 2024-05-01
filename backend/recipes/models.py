@@ -30,7 +30,7 @@ class Tag(models.Model):
             ),
         ],
     )
-    slug = models.Color(
+    slug = models.CharField(
         max_length=RECIPES_MAX_LENGTH,
         blank=False,
         unique=True,
