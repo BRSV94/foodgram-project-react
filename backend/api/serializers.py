@@ -158,7 +158,7 @@ class IngredientInRecipeWriteSerializer(ModelSerializer):
 
 
 class RecipeReadSerializer(ModelSerializer):
-    tags = TagSerializer(many=True, read_only=True)
+    # tags = TagSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
     ingredients = IngredientInRecipeReadSerializer(many=True)
     is_favorited = SerializerMethodField(read_only=True)
