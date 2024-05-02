@@ -112,7 +112,7 @@ class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
     # id = IntegerField()
     id = PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all(),
-        error_massages=error_messages,
+        default_error_messages=error_messages,
     )
     # name = ReadOnlyField(source='ingredient.name')
     # measurement_unit = ReadOnlyField(
