@@ -58,6 +58,7 @@ class TagSerializer(ModelSerializer):
         return value
 
     def to_internal_value(self, data):
+        print(type(data))
         print(data)
         print('LOLO*9')
 
