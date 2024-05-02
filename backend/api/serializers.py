@@ -113,12 +113,17 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
-class IngredientInRecipeWriteSerializer(ModelSerializer):
+class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
     id = IntegerField()
+    # name = ReadOnlyField(source='ingredient.name')
+    # measurement_unit = ReadOnlyField(
+    #     source='ingredient.measurement_unit.measurement_unit'
+    # )
 
     class Meta:
-        model = IngredientInRecipe
-        fields = ('id', 'amount')
+        # model = IngredientInRecipe
+        # fields = ('id', 'name', 'measurement_unit', 'amount')
+        read_only_fields = ('name', 'measurement_unit')
 
     def validate_id(self, value):
         if not Ingredient.objects.filter(id=value).exists():
