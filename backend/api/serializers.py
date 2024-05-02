@@ -52,10 +52,14 @@ class TagSerializer(ModelSerializer):
         fields = ('id', 'name', 'color', 'slug',)
 
     def to_internal_value(self, tag_id):
-        if not Tag.objects.filter(id=tag_id).exists():
+        # if not Tag.objects.filter(id=tag_id).exists():
+        #     raise ValidationError(
+        #         "Тэга с таким id не существует.")
+        try:
+            return Tag.objects.get(id=tag_id)
+        except: 
             raise ValidationError(
                 "Тэга с таким id не существует.")
-        return Tag.objects.get(id=tag_id)
 
 
 class IngredientSerializer(ModelSerializer):
