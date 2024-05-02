@@ -4,6 +4,7 @@ from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from recipes.utils import recipe_create_or_update
 from rest_framework.serializers import ReadOnlyField  # ?
 from rest_framework.serializers import (CharField, IntegerField,
+                                        ListField,
                                         ModelSerializer,
                                         PrimaryKeyRelatedField,
                                         SerializerMethodField, ValidationError)
@@ -56,6 +57,10 @@ class TagSerializer(ModelSerializer):
             raise ValidationError(
                 "Тэга с таким id не существует.")
         return value
+
+    def to_representation(self, value):
+        return {'id': value.id, 'name': value.name,
+                'color': value.color, 'slug': value.slug}
 
 
 class IngredientSerializer(ModelSerializer):
@@ -185,8 +190,9 @@ class RecipeReadSerializer(ModelSerializer):
 
 
 class RecipeWriteSerializer(ModelSerializer):
-    tags = TagSerializer(many=True)
-    # tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    # tags = ListField(child=IntegerField())
+    # tags = TagSerializer(many=True)
+    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     author = UserSerializer(read_only=True) # Read only?
     ingredients = IngredientInRecipeWriteSerializer(many=True)
     image = Base64ImageField()
