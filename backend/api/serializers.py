@@ -102,33 +102,18 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
 
 
 class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
-    # default_error_messages = {
-    error_messages = {
-        'required': 'Это поле является обязательным.',
-        'does_not_exist': 'Недопустимый pk "{pk_value}" - объект не существует.',
-        'incorrect_type': 'Неверный тип. Ожидается значение pk, получено {data_type}.',
-    }
-
-    # id = IntegerField()
-    id = PrimaryKeyRelatedField(
-        queryset=Ingredient.objects.all(),
-        default_error_messages=error_messages,
-    )
-    # name = ReadOnlyField(source='ingredient.name')
-    # measurement_unit = ReadOnlyField(
-    #     source='ingredient.measurement_unit.measurement_unit'
-    # )
+    id = IntegerField()
 
     class Meta:
         model = IngredientInRecipe
         fields = ('id', 'name', 'measurement_unit', 'amount')
         read_only_fields = ('name', 'measurement_unit')
 
-    # def validate_id(self, value):
-    #     if not Ingredient.objects.filter(id=value).exists():
-    #         raise ValidationError(
-    #             "Ингредиента с таким id не существует.")
-    #     return value
+    def validate_id(self, value):
+        if not Ingredient.objects.filter(id=value).exists():
+            raise ValidationError(
+                "Ингредиента с таким id не существует.")
+        return value
 
     def validate_amount(self, value):
         if type(value) != int or value < 1:
