@@ -50,7 +50,6 @@ class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug',)
-        read_only_fields = ('id', 'name', 'color', 'slug',)
 
     def validate_id(self, value):
         if not Tag.objects.filter(id=value).exists():
@@ -58,10 +57,14 @@ class TagSerializer(ModelSerializer):
                 "Тэга с таким id не существует.")
         return value
 
-    def to_representation(self, value):
-        return {'id': value.id, 'name': value.name,
-                'color': value.color, 'slug': value.slug}
-    
+    def to_internal_value(self, data):
+        print(data)
+        print('LOLO*9')
+
+    # def to_representation(self, value):
+    #     return {'id': value.id, 'name': value.name,
+    #             'color': value.color, 'slug': value.slug}
+
 
 # class TagWriteSerializer(ModelSerializer):
 
@@ -194,7 +197,7 @@ class RecipeReadSerializer(ModelSerializer):
 class RecipeWriteSerializer(ModelSerializer):
     # tags = ListField(child=IntegerField())
     # tags = TagSerializer(many=True)
-    # tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     author = UserSerializer(read_only=True) # Read only?
     ingredients = IngredientInRecipeWriteSerializer(many=True)
     image = Base64ImageField()
