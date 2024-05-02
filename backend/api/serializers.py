@@ -102,7 +102,11 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
 
 
 class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
-    id = PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    # id = IntegerField()
+    id = PrimaryKeyRelatedField(
+        queryset=Ingredient.objects.all(),
+        error_massage='Ингредиента с таким id не существует.',
+    )
     # name = ReadOnlyField(source='ingredient.name')
     # measurement_unit = ReadOnlyField(
     #     source='ingredient.measurement_unit.measurement_unit'
@@ -113,11 +117,11 @@ class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
         fields = ('id', 'name', 'measurement_unit', 'amount')
         read_only_fields = ('name', 'measurement_unit')
 
-    def validate_id(self, value):
-        if not Ingredient.objects.filter(id=value).exists():
-            raise ValidationError(
-                "Ингредиента с таким id не существует.")
-        return value
+    # def validate_id(self, value):
+    #     if not Ingredient.objects.filter(id=value).exists():
+    #         raise ValidationError(
+    #             "Ингредиента с таким id не существует.")
+    #     return value
 
     def validate_amount(self, value):
         if type(value) != int or value < 1:
