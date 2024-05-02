@@ -121,7 +121,7 @@ class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
     # )
 
     class Meta:
-        # model = IngredientInRecipe
+        model = IngredientInRecipe
         # fields = ('id', 'name', 'measurement_unit', 'amount')
         read_only_fields = ('name', 'measurement_unit')
 
