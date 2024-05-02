@@ -108,12 +108,13 @@ def subscribe_action(self, request, submodel, serializer):
 def recipe_create_or_update(self, validated_data, recipe):
     ingredients_data = validated_data.pop('ingredients')
     tags_data = validated_data.pop('tags')
-    if not recipe:
-        recipe = Recipe.objects.create(**validated_data)
+    # if not recipe:
+    #     recipe = Recipe.objects.create(**validated_data)
     for ingredient_data in ingredients_data:
         ing_id = ingredient_data['id']
         ing_amount = ingredient_data['amount']
         # ingredient = Ingredient.objects.get(id=ing_id)
+        # ТУТ БУДУТ БУЛКИ!
         ing_in_recipe, create = IngredientInRecipe.objects.get_or_create(
             # ingredient=ingredient,
             ingredient_id=ing_id,
