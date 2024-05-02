@@ -52,9 +52,6 @@ class TagSerializer(ModelSerializer):
         fields = ('id', 'name', 'color', 'slug',)
 
     def to_internal_value(self, tag_id):
-        # if not Tag.objects.filter(id=tag_id).exists():
-        #     raise ValidationError(
-        #         "Тэга с таким id не существует.")
         try:
             return Tag.objects.get(id=tag_id)
         except: 
@@ -105,7 +102,7 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
 
 
 class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
-    id = IntegerField()
+    id = PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
     # name = ReadOnlyField(source='ingredient.name')
     # measurement_unit = ReadOnlyField(
     #     source='ingredient.measurement_unit.measurement_unit'
