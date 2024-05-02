@@ -51,24 +51,11 @@ class TagSerializer(ModelSerializer):
         model = Tag
         fields = ('id', 'name', 'color', 'slug',)
 
-    def validate_id(self, value):
-        if not Tag.objects.filter(id=value).exists():
+    def to_internal_value(self, tag_id):
+        if not Tag.objects.filter(id=tag_id).exists():
             raise ValidationError(
                 "Тэга с таким id не существует.")
-        return value
-
-    def to_internal_value(self, tag_id):
-        print(type(tag_id))
-        print(tag_id)
-        print('LOLO*9')
         return Tag.objects.get(id=tag_id)
-
-    # def to_representation(self, value):
-    #     return {'id': value.id, 'name': value.name,
-    #             'color': value.color, 'slug': value.slug}
-
-
-# class TagWriteSerializer(ModelSerializer):
 
 
 class IngredientSerializer(ModelSerializer):
