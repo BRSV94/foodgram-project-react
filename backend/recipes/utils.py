@@ -123,20 +123,5 @@ def recipe_create_or_update(self, validated_data, recipe):
         ))
     ingredients_objs = IngredientInRecipe.objects.bulk_create(ingredients)
     recipe.ingredients.set(ingredients_objs)
-        # ingredient = Ingredient.objects.get(id=ing_id)
-        # ТУТ БУДУТ БУЛКИ!
-        # ing_in_recipe, create = IngredientInRecipe.objects.get_or_create(
-        #     # ingredient=ingredient,
-        #     ingredient_id=ing_id,
-        #     amount=ing_amount,
-        # )
-        # recipe.ingredients.add(ing_in_recipe)
-###
-    # tags = []
-    # for tag_id in tags_data:
-    #     tag_obj = Tag.objects.get(id=tag_id)
-    #     tags.append(tag_obj)
-    # recipe.tags.set(tags)
-###
     recipe.tags.set(tags_data)
     return recipe
