@@ -243,6 +243,9 @@ class RecipeWriteSerializer(ModelSerializer):
             raise ValidationError(
                 "Тэги не могут повторяться.")
         return tags
+    
+    def validate(self, attrs):
+        return attrs
 
 
 # class RecipeSerializer(ModelSerializer):
