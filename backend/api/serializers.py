@@ -50,6 +50,7 @@ class TagSerializer(ModelSerializer):
         model = Tag
         fields = ('id', 'name', 'color', 'slug',)
         read_only_fields = ('name', 'color', 'slug',)
+        write_only_fields = ('id',)
 
     def validate_id(self, value):
         if not Tag.objects.filter(id=value).exists():
