@@ -122,7 +122,7 @@ class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
 
     class Meta:
         model = IngredientInRecipe
-        # fields = ('id', 'name', 'measurement_unit', 'amount')
+        fields = ('id', 'name', 'measurement_unit', 'amount')
         read_only_fields = ('name', 'measurement_unit')
 
     def validate_id(self, value):
