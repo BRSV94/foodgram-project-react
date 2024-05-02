@@ -158,7 +158,7 @@ class IngredientInRecipeWriteSerializer(ModelSerializer):
 
 
 class RecipeReadSerializer(ModelSerializer):
-    # tags = TagSerializer(many=True, read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
     ingredients = IngredientInRecipeReadSerializer(many=True)
     is_favorited = SerializerMethodField(read_only=True)
@@ -193,7 +193,7 @@ class RecipeReadSerializer(ModelSerializer):
 
 class RecipeWriteSerializer(ModelSerializer):
     # tags = ListField(child=IntegerField())
-    tags = TagSerializer(many=True)
+    # tags = TagSerializer(many=True)
     # tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     author = UserSerializer(read_only=True) # Read only?
     ingredients = IngredientInRecipeWriteSerializer(many=True)
