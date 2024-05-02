@@ -117,6 +117,7 @@ class IngredientInRecipeWriteSerializer(ModelSerializer):
         if type(value) != int or value < 1:
             raise ValidationError(
                 "Кол-во ингредиента должно быть числом большим нуля.")
+        return value
 
 
 # class IngredientInRecipeSerializer(ModelSerializer): # Зачем разделять? Разберись.
