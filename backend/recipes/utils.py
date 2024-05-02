@@ -123,11 +123,11 @@ def recipe_create_or_update(self, validated_data, recipe):
         )
         recipe.ingredients.add(ing_in_recipe)
 ###
-    tags = []
-    for tag_id in tags_data:
-        tag_obj = Tag.objects.get(id=tag_id)
-        tags.append(tag_obj)
-    recipe.tags.set(tags)
+    # tags = []
+    # for tag_id in tags_data:
+    #     tag_obj = Tag.objects.get(id=tag_id)
+    #     tags.append(tag_obj)
+    # recipe.tags.set(tags)
 ###
-    # recipe.tags.set(tags_data)
+    recipe.tags.set(tags_data)
     return recipe
