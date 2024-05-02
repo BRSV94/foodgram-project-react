@@ -196,8 +196,8 @@ class RecipeReadSerializer(ModelSerializer):
 
 class RecipeWriteSerializer(ModelSerializer):
     # tags = ListField(child=IntegerField())
-    # tags = TagSerializer(many=True)
-    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    tags = TagSerializer(many=True)
+    # tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     author = UserSerializer(read_only=True) # Read only?
     ingredients = IngredientInRecipeWriteSerializer(many=True)
     image = Base64ImageField()
