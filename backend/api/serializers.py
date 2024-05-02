@@ -102,10 +102,17 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
 
 
 class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
+    # default_error_messages = {
+    error_messages = {
+        'required': _('Это поле является обязательным.'),
+        'does_not_exist': _('Недопустимый pk "{pk_value}" - объект не существует.'),
+        'incorrect_type': _('Неверный тип. Ожидается значение pk, получено {data_type}.'),
+    }
+
     # id = IntegerField()
     id = PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all(),
-        error_massage='Ингредиента с таким id не существует.',
+        error_massages=error_messages,
     )
     # name = ReadOnlyField(source='ingredient.name')
     # measurement_unit = ReadOnlyField(
