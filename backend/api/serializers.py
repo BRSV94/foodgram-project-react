@@ -168,7 +168,7 @@ class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
 
 
 class RecipeReadSerializer(ModelSerializer):
-    tags = TagSerializer(many=True, read_only=True)
+    tags = TagSerializer(many=True)
     author = UserSerializer(read_only=True)
     ingredients = IngredientInRecipeReadSerializer(many=True)
     is_favorited = SerializerMethodField(read_only=True)
@@ -201,26 +201,24 @@ class RecipeReadSerializer(ModelSerializer):
                 and user.shopping_cart.filter(recipes=obj).exists())
 
 
-class RecipeWriteSerializer(ModelSerializer):
-    # tags = ListField(child=IntegerField())
-    tags = TagSerializer(many=True)
-    # tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
-    author = UserSerializer(read_only=True) # Read only?
+class RecipeWriteSerializer(RecipeReadSerializer):
+    # tags = TagSerializer(many=True)
+    # author = UserSerializer(read_only=True)
     ingredients = IngredientInRecipeWriteSerializer(many=True)
-    image = Base64ImageField()
+    # image = Base64ImageField()
 
-    class Meta:
-        model = Recipe
-        fields = (
-            'id',
-            'tags',
-            'author',
-            'ingredients',
-            'name',
-            'image',
-            'text',
-            'cooking_time',
-        )
+    # class Meta:
+    #     model = Recipe
+    #     fields = (
+    #         'id',
+    #         'tags',
+    #         'author',
+    #         'ingredients',
+    #         'name',
+    #         'image',
+    #         'text',
+    #         'cooking_time',
+    #     )
 
     def create(self, validated_data):
         recipe = recipe_create_or_update(
