@@ -50,7 +50,6 @@ class TagSerializer(ModelSerializer):
         model = Tag
         fields = ('id', 'name', 'color', 'slug',)
         read_only_fields = ('name', 'color', 'slug',)
-        write_only_fields = ('id',)
 
     def validate_id(self, value):
         if not Tag.objects.filter(id=value).exists():
@@ -155,15 +154,9 @@ class RecipeReadSerializer(ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
     ingredients = IngredientInRecipeReadSerializer(many=True)
-    # ingredients = IngredientInRecipeReadSerializer(many=True)
     is_favorited = SerializerMethodField(read_only=True)
     is_in_shopping_cart = SerializerMethodField(read_only=True)
     image = Base64ImageField()
-
-    # tags = TagListField(queryset=Tag.objects.all(), many=True)
-#     tags = TagSerializer(many=True, read_only=True)
-#     author = UserSerializer(read_only=True)
-#     ingredients = IngredientInRecipeSerializer(many=True)
 
     class Meta:
         model = Recipe
@@ -192,14 +185,11 @@ class RecipeReadSerializer(ModelSerializer):
 
 
 class RecipeWriteSerializer(ModelSerializer):
-    # tags = TagListField(queryset=Tag.objects.all(), many=True)
-    # tags = TagSerializer(many=True)
-    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    tags = TagSerializer(many=True)
+    # tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     author = UserSerializer(read_only=True) # Read only?
     ingredients = IngredientInRecipeWriteSerializer(many=True)
-    # ingredients = IngredientInRecipeWriteSerializer(many=True)
     image = Base64ImageField()
-
 
     class Meta:
         model = Recipe
@@ -240,24 +230,6 @@ class RecipeWriteSerializer(ModelSerializer):
             raise ValidationError(
                 "Ингредиенты не могут повторяться.")
         return ingredients
-        # ing_ids = []
-        # for ingredient in ingredients:
-            # if not ingredient['id'] or not ingredient['amount']:
-            #     raise ValidationError(
-            #         "Некорректные данные ингредиентов.")
-            # if ingredient['id'] in ing_ids:
-            #     raise ValidationError(
-            #         "Ингредиенты не могут повторяться.")
-            # ing_ids.append(ingredient['id'])
-            # if not Ingredient.objects.filter(
-            #     id=ingredient['id']
-            # ).exists():
-            #     raise ValidationError(
-            #         "Ингредиента с таким id не существует.")
-            # if int(ingredient['amount']) < 1:
-            #     raise ValidationError(
-            #         "Кол-во ингредиента не может быть меньше, чем 1.")
-        # return ingredients
 
     def validate_tags(self, tags):
         if not tags:
