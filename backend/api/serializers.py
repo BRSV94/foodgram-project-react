@@ -57,10 +57,11 @@ class TagSerializer(ModelSerializer):
                 "Тэга с таким id не существует.")
         return value
 
-    def to_internal_value(self, data):
-        print(type(data))
-        print(data)
+    def to_internal_value(self, tag_id):
+        print(type(tag_id))
+        print(tag_id)
         print('LOLO*9')
+        return Tag.objects.get(id=tag_id)
 
     # def to_representation(self, value):
     #     return {'id': value.id, 'name': value.name,
