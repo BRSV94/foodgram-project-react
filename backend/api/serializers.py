@@ -50,7 +50,7 @@ class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug',)
-        read_only_fields = ('name', 'color', 'slug',)
+        read_only_fields = ('id', 'name', 'color', 'slug',)
 
     def validate_id(self, value):
         if not Tag.objects.filter(id=value).exists():
@@ -61,6 +61,9 @@ class TagSerializer(ModelSerializer):
     def to_representation(self, value):
         return {'id': value.id, 'name': value.name,
                 'color': value.color, 'slug': value.slug}
+    
+
+# class TagWriteSerializer(ModelSerializer):
 
 
 class IngredientSerializer(ModelSerializer):
@@ -243,9 +246,6 @@ class RecipeWriteSerializer(ModelSerializer):
             raise ValidationError(
                 "Тэги не могут повторяться.")
         return tags
-    
-    def validate(self, attrs):
-        return attrs
 
 
 # class RecipeSerializer(ModelSerializer):
