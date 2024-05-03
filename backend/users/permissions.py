@@ -8,7 +8,7 @@ class IsOwnerProfile(IsAuthenticated):
                 or obj.user == request.user)
 
 
-class IsAuthenticatedOrNotMe(BasePermission):
-    def has_permission(self, request, view):
-        return ('users/me' not in request.META['PATH_INFO']
-                or request.user.is_authenticated)
+# class IsAuthenticatedOrNotMe(BasePermission):
+#     def has_permission(self, request, view):
+#         return ('users/me' not in request.META['PATH_INFO']
+#                 or request.user.is_authenticated)

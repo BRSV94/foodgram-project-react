@@ -66,14 +66,20 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         detail=True,
-        # methods=['post'],
-        methods=['post', 'delete'],
+        methods=['post'],
+        # methods=['post', 'delete'],
         permission_classes=(IsAuthenticated,)
     )
     def subscribe(self, request, *args, **kwargs):
-        model = UsersSubscribes
-        serializer = SubscribesSerializer
-        return subscribe_action(self, request, model, serializer)
+        # model = UsersSubscribes
+        # serializer = SubscribesSerializer
+        return subscribe_action(self, request, UsersSubscribes, SubscribesSerializer)
+    
+    @subscribe.mapping.delete
+    def unsubscribe(self, request, *args, **kwargs):
+        # model = UsersSubscribes
+        # serializer = SubscribesSerializer
+        return subscribe_action(self, request, UsersSubscribes, SubscribesSerializer)
 
     @action(
         detail=False,
@@ -123,18 +129,28 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=['post', 'delete'],
+        methods=['post'],
+        # methods=['post', 'delete'],
         permission_classes=(IsAuthenticated,)
     )
     def favorite(self, request, *args, **kwargs):
         return recipe_action(self, request, Favorited, SubRecipeSerializer)
+    
+    @favorite.mapping.delete
+    def unfavorite(self, request, *args, **kwargs):
+        return recipe_action(self, request, Favorited, SubRecipeSerializer)
 
     @action(
         detail=True,
-        methods=['post', 'delete'],
+        methods=['post'],
+        # methods=['post', 'delete'],
         permission_classes=(IsAuthenticated,),
     )
     def shopping_cart(self, request, *args, **kwargs):
+        return recipe_action(self, request, ShoppingCart, SubRecipeSerializer)
+    
+    @shopping_cart.mapping.delete
+    def remove_with_shopping_cart(self, request, *args, **kwargs):
         return recipe_action(self, request, ShoppingCart, SubRecipeSerializer)
 
 
