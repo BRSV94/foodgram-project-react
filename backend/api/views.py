@@ -20,7 +20,8 @@ from .serializers import (IngredientSerializer,
                           RecipeWriteSerializer,
                           SubRecipeSerializer,
                           SubscribesSerializer,
-                          TagSerializer)
+                          TagSerializer,
+                          UserSerializer)
 
 
 class CustomUserViewSet(UserViewSet):
@@ -28,11 +29,11 @@ class CustomUserViewSet(UserViewSet):
     @action(
         detail=True,
         methods=['get'],
-        permission_classes=(AllowAny,)
+        permission_classes=(IsAuthenticated,)
     )
     def me(self, request, *args, **kwargs):
         instance = request.user
-        serializer = self.get_serializer(instance)
+        serializer = UserSerializer(instance)
         return Response(serializer.data)
 
     @action(
