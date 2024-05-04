@@ -1,6 +1,7 @@
 import inspect
 
 from django.shortcuts import get_object_or_404
+from rest_framework.serializers import ValidationError
 
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from rest_framework import status
@@ -8,144 +9,61 @@ from rest_framework.response import Response
 from users.models import User
 
 
-def add(self, serializer, obj, obj_for_add):
-    obj.recipes.add(obj_for_add)
-    data = serializer(instance=obj_for_add).data
-    serializer = serializer(instance=obj_for_add, data=data)
-    serializer.is_valid(raise_exception=False)
-    headers = self.get_success_headers(serializer.data)
-    return Response(serializer.data,
-                    status=status.HTTP_201_CREATED,
-                    headers=headers)
+def preparation(self, request, submodel):
+    obj_for_action_id = self.kwargs.get('pk')
+    try:
+        obj_for_action = Recipe.objects.filter(
+            id=obj_for_action_id
+        ).exists().first()
 
+        relation_exists = submodel.objects.filter(
+            user=request.user,
+            recipes=obj_for_action
+        ).exists()
 
-def remove(obj, obj_for_remove):
-    obj.recipes.remove(obj_for_remove)
-    return Response(status=status.HTTP_204_NO_CONTENT)
+        obj, create = submodel.objects.get_or_create(user=request.user)
+        return obj, obj_for_action, relation_exists
+
+    except:
+        raise ValidationError('Рецепта с таким id не существует.')
+
 
 def add_to_recipe(self, request, submodel, serializer):
-    print(submodel.__name__)
     EXISTS_MESSAGES = {
-        'favorite':  'Рецепт  уже в избранном.',
-        'shopping_cart': 'Рецепт уже в списке покупок.',
+        'Favorited':  'Рецепт  уже в избранном.',
+        'ShoppingCart': 'Рецепт уже в списке покупок.',
     }
 
-    call_func_name = inspect.currentframe().f_back.f_code.co_name
-    obj_for_action_id = self.kwargs.get('pk')
-    if request.method == 'delete':
-        obj_for_action = get_object_or_404(Recipe, id=obj_for_action_id)
-    else:
-        if not Recipe.objects.filter(id=obj_for_action_id).exists():
-            return Response('Рецепта с таким id не существует.',
-                            status=status.HTTP_400_BAD_REQUEST)
-        obj_for_action = Recipe.objects.get(id=obj_for_action_id)
+    obj, obj_for_add, relation_exists = preparation(self, request, submodel)
 
-    relation_exists = submodel.objects.filter(
-        user=request.user,
-        recipes=obj_for_action
-    ).exists()
+    if not relation_exists:
+        obj.recipes.add(obj_for_add)
+        data = serializer(instance=obj_for_add).data
+        serializer = serializer(instance=obj_for_add, data=data)
+        serializer.is_valid(raise_exception=False)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data,
+                        status=status.HTTP_201_CREATED,
+                        headers=headers)
 
-    obj, create = submodel.objects.get_or_create(user=request.user)
-    serializer = serializer
-    if request.method == 'POST':
-        if not relation_exists:
-            return add(self, serializer, obj, obj_for_action)
-
-    #     return Response(MESSAGE_LIST[call_func_name]['exists_message'],
-    #                     status=status.HTTP_400_BAD_REQUEST)
-
-    # if relation_exists:
-    #     return remove(obj, obj_for_action)
-
-    # return Response(MESSAGE_LIST[call_func_name]['no_exists_message'],
-    #                 status=status.HTTP_400_BAD_REQUEST)
-
-
-def remove_from_recipe(self, request, submodel, serializer):
-    MESSAGE_LIST = {
-        'favorite': {
-            'exists_message': 'Рецепт  уже в избранном.',
-            'no_exists_message': 'Рецепт не находился в избранном.'
-        },
-        'shopping_cart': {
-            'exists_message': 'Рецепт уже в списке покупок.',
-            'no_exists_message': 'Рецепт не был в списке покупок.'
-        }
-    }
-
-    call_func_name = inspect.currentframe().f_back.f_code.co_name
-    obj_for_action_id = self.kwargs.get('pk')
-    if request.method == 'delete':
-        obj_for_action = get_object_or_404(Recipe, id=obj_for_action_id)
-    else:
-        if not Recipe.objects.filter(id=obj_for_action_id).exists():
-            return Response('Рецепта с таким id не существует.',
-                            status=status.HTTP_400_BAD_REQUEST)
-        obj_for_action = Recipe.objects.get(id=obj_for_action_id)
-
-    relation_exists = submodel.objects.filter(
-        user=request.user,
-        recipes=obj_for_action
-    ).exists()
-
-    obj, create = submodel.objects.get_or_create(user=request.user)
-    serializer = serializer
-    if request.method == 'POST':
-        if not relation_exists:
-            return add(self, serializer, obj, obj_for_action)
-
-        return Response(MESSAGE_LIST[call_func_name]['exists_message'],
+    return Response(EXISTS_MESSAGES[submodel.__name__],
                         status=status.HTTP_400_BAD_REQUEST)
 
-    if relation_exists:
-        return remove(obj, obj_for_action)
 
-    return Response(MESSAGE_LIST[call_func_name]['no_exists_message'],
-                    status=status.HTTP_400_BAD_REQUEST)
-
-
-def recipe_action(self, request, submodel, serializer):
-    print(submodel.__name__, 'LOL'*29)
-    MESSAGE_LIST = {
-        'favorite': {
-            'exists_message': 'Рецепт  уже в избранном.',
-            'no_exists_message': 'Рецепт не находился в избранном.'
-        },
-        'shopping_cart': {
-            'exists_message': 'Рецепт уже в списке покупок.',
-            'no_exists_message': 'Рецепт не был в списке покупок.'
-        }
+def remove_from_recipe(self, request, submodel):
+    NO_EXISTS_MESSAGES = {
+        'Favorited': 'Рецепт не был в избранном.',
+        'ShoppingCart': 'Рецепт не был в списке покупок.',
     }
 
-    call_func_name = inspect.currentframe().f_back.f_code.co_name
-    obj_for_action_id = self.kwargs.get('pk')
-    if request.method == 'delete':
-        obj_for_action = get_object_or_404(Recipe, id=obj_for_action_id)
-    else:
-        if not Recipe.objects.filter(id=obj_for_action_id).exists():
-            return Response('Рецепта с таким id не существует.',
-                            status=status.HTTP_400_BAD_REQUEST)
-        obj_for_action = Recipe.objects.get(id=obj_for_action_id)
-
-    relation_exists = submodel.objects.filter(
-        user=request.user,
-        recipes=obj_for_action
-    ).exists()
-
-    obj, create = submodel.objects.get_or_create(user=request.user)
-    serializer = serializer
-    if request.method == 'POST':
-        if not relation_exists:
-            return add(self, serializer, obj, obj_for_action)
-
-        return Response(MESSAGE_LIST[call_func_name]['exists_message'],
-                        status=status.HTTP_400_BAD_REQUEST)
+    obj, obj_for_remove, relation_exists = preparation(self, request, submodel)
 
     if relation_exists:
-        return remove(obj, obj_for_action)
-
-    return Response(MESSAGE_LIST[call_func_name]['no_exists_message'],
-                    status=status.HTTP_400_BAD_REQUEST)
+        obj.recipes.remove(obj_for_remove)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    return Response(NO_EXISTS_MESSAGES[submodel.__name__],
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
 def subscribe_action(self, request, submodel, serializer):
@@ -161,7 +79,6 @@ def subscribe_action(self, request, submodel, serializer):
     ).exists()
 
     obj, create = submodel.objects.get_or_create(user=request.user)
-    serializer = serializer
     if request.method == 'POST':
         if not relation_exists:
             obj.subscribes.add(obj_for_action)
