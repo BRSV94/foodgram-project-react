@@ -12,8 +12,8 @@ class IsAuthenticatedOrNotMe(BasePermission):
     def has_permission(self, request, view):
         print('lol'*29)
         print(request)
-        print(request.kwargs)
-        print(request.kwargs.get('pk'))
+        print(request.query_params)
+        print(request.query_params.get('pk'))
 
         return (request.user.is_authenticated
-                or request.kwargs.get('pk'))
+                or request.query_params.get('pk'))
