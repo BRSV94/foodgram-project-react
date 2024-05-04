@@ -98,7 +98,7 @@ def recipe_create_or_update(self, validated_data, recipe):
             amount=ing_amount,
         ))
     print(ingredients)
-    ingredients.sort(key=lambda x: x.ingredient)
+    ingredients.sort(key=lambda x: x.ingredient.name)
     print(ingredients)
 
     ingredients_objs = IngredientInRecipe.objects.bulk_create(ingredients)
