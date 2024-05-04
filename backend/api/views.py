@@ -32,6 +32,7 @@ class CustomUserViewSet(UserViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def me(self, request, *args, **kwargs):
+        print('LOLOLOLOKEK'*3)
         instance = request.user
         serializer = UserSerializer(instance)
         return Response(serializer.data)
