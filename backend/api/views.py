@@ -27,12 +27,11 @@ from .serializers import (IngredientSerializer,
 class CustomUserViewSet(UserViewSet):
 
     @action(
-        detail=True,
+        detail=False,
         methods=['get'],
         permission_classes=(IsAuthenticated,)
     )
     def me(self, request, *args, **kwargs):
-        print('LOLOLOLOKEK'*3)
         instance = request.user
         serializer = UserSerializer(instance)
         return Response(serializer.data)
