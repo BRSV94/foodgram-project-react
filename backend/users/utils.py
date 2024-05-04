@@ -6,8 +6,9 @@ from .models import ShoppingCart
 
 
 def create_shopping_cart(request):
+    user = request.user
     ingredients = IngredientInRecipe.objects.filter(
-        recipes__in_shopping_cart__user=request.user
+        recipes__in_shopping_cart__user=user
     ).annotate(total_amount=Sum('amount')).values_list(
         'ingredient__name',
         'ingredient__measurement_unit',
