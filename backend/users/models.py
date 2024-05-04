@@ -48,6 +48,16 @@ class UsersSubscribes(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'subscribes'],
+                name='unique_user_subscribes'
+            ),
+            models.CheckConstraint(
+                check=~models.Q(user=models.F('subscribes')),
+                name='user_subscribes_not_equal'
+            )
+        ]
 
 
 class Favorited(models.Model):
