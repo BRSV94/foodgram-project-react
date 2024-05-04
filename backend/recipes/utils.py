@@ -17,7 +17,7 @@ def preparation(self, request, submodel):
         print('LOL3')
         obj_for_action = Recipe.objects.filter(
             id=obj_for_action_id
-        ).exists().first()
+        ).first()
         print('LOL4')
 
         relation_exists = submodel.objects.filter(
