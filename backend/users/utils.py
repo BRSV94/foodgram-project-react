@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 
 from recipes.models import IngredientInRecipe
@@ -11,7 +12,12 @@ def create_shopping_cart(request):
 
     ingredients = IngredientInRecipe.objects.filter(
         recipes__in_shopping_cart__user=request.user
-    ).values('ingredient', 'amount')
+    ).annotate(total_amount=Sum('amount')).values(
+        'ingredient__name',
+        'ingredient__measurement_unit',
+        'amount',
+        'total_amount'
+    )
 
     # .annotate(total_amount=sum('amount'))
 
