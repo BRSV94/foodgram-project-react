@@ -11,6 +11,7 @@ class IsOwnerProfile(IsAuthenticated):
 class IsAuthenticatedOrNotMe(BasePermission):
     def has_permission(self, request, view):
         print('lol'*29)
+        print(self)
         print(self.kwargs)
         print(self.kwargs.get('pk'))
 
