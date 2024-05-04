@@ -146,13 +146,16 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         )
         return recipe
 
-    def update(self, instance, validated_data):
-        update_recipe = recipe_create_or_update(
-            self,
-            validated_data,
-            instance
-        )
-        return update_recipe
+    # def update(self, instance, validated_data):
+        
+        
+
+    #     update_recipe = recipe_create_or_update(
+    #         self,
+    #         validated_data,
+    #         instance
+    #     )
+    #     return update_recipe
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
@@ -171,7 +174,17 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         if len(tags) != len(set(tags)):
             raise ValidationError(
                 "Тэги не могут повторяться.")
-        return tags
+        return tags        
+
+    @validate_tags
+    @validate_ingredients
+    def update(self, instance, validated_data):
+        update_recipe = recipe_create_or_update(
+            self,
+            validated_data,
+            instance
+        )
+        return update_recipe
 
 
 class SubRecipeSerializer(ModelSerializer):
