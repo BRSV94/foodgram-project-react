@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password
 
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
@@ -54,7 +55,7 @@ class TagSerializer(ModelSerializer):
     def to_internal_value(self, tag_id):
         try:
             return Tag.objects.get(id=tag_id)
-        except: 
+        except ObjectDoesNotExist:
             raise ValidationError(
                 "Тэга с таким id не существует.")
 
@@ -69,7 +70,7 @@ class IngredientSerializer(ModelSerializer):
 
 
 class IngredientInRecipeReadSerializer(ModelSerializer):
-    id = ReadOnlyField(source='ingredient.id') 
+    id = ReadOnlyField(source='ingredient.id')
     name = ReadOnlyField(source='ingredient.name')
     measurement_unit = ReadOnlyField(
         source='ingredient.measurement_unit.measurement_unit'
@@ -138,25 +139,6 @@ class RecipeReadSerializer(ModelSerializer):
 class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
 
-    def create(self, validated_data):
-        recipe = recipe_create_or_update(
-            self,
-            validated_data,
-            None
-        )
-        return recipe
-
-    # def update(self, instance, validated_data):
-        
-        
-
-    #     update_recipe = recipe_create_or_update(
-    #         self,
-    #         validated_data,
-    #         instance
-    #     )
-    #     return update_recipe
-
     def validate_ingredients(self, ingredients):
         if not ingredients:
             raise ValidationError(
@@ -174,7 +156,15 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         if len(tags) != len(set(tags)):
             raise ValidationError(
                 "Тэги не могут повторяться.")
-        return tags        
+        return tags
+
+    def create(self, validated_data):
+        recipe = recipe_create_or_update(
+            self,
+            validated_data,
+            None
+        )
+        return recipe
 
     def update(self, instance, validated_data):
         self.validate_tags(validated_data.get('tags'))

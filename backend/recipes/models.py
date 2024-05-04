@@ -5,8 +5,8 @@ from django.core.validators import (MinValueValidator,
 from django.db import models
 
 from foodgram.constants import (RECIPES_MAX_LENGTH,
-                               MIN_POSITIVE_VALUE,
-                               MAX_POSITIVE_VALUE)
+                                MIN_POSITIVE_VALUE,
+                                MAX_POSITIVE_VALUE)
 
 User = get_user_model()
 

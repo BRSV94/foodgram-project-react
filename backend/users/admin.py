@@ -74,4 +74,5 @@ class ShoppingCartdAdmin(admin.ModelAdmin):
         'recipes',
     )
 
+
 admin.site.unregister(Group)

@@ -9,7 +9,7 @@ from recipes.utils import add_recipe_to, remove_recipe_from, subscribe_action
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
-from rest_framework.permissions import AllowAny, IsAuthenticated, SAFE_METHODS
+from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from users.models import Favorited, ShoppingCart, UsersSubscribes
@@ -61,7 +61,7 @@ class CustomUserViewSet(UserViewSet):
 
         return Response('Вы уже подписаны на данного пользователя.',
                         status=status.HTTP_400_BAD_REQUEST)
-    
+
     @subscribe.mapping.delete
     def unsubscribe(self, request, *args, **kwargs):
         obj, obj_for_action, relation_exists = subscribe_action(
@@ -73,7 +73,7 @@ class CustomUserViewSet(UserViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
         return Response('Вы не были подписаны на данного пользователя.',
-                    status=status.HTTP_400_BAD_REQUEST)
+                        status=status.HTTP_400_BAD_REQUEST)
 
     @action(
         detail=False,
@@ -127,7 +127,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def favorite(self, request, *args, **kwargs):
         return add_recipe_to(self, request, Favorited, SubRecipeSerializer)
-    
+
     @favorite.mapping.delete
     def unfavorite(self, request, *args, **kwargs):
         return remove_recipe_from(self, request, Favorited)
@@ -139,7 +139,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def shopping_cart(self, request, *args, **kwargs):
         return add_recipe_to(self, request, ShoppingCart, SubRecipeSerializer)
-    
+
     @shopping_cart.mapping.delete
     def remove_with_shopping_cart(self, request, *args, **kwargs):
         return remove_recipe_from(self, request, ShoppingCart)

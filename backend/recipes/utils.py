@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from rest_framework.serializers import ValidationError
 
@@ -18,19 +19,15 @@ def preparation(self, request, submodel, obj_for_action):
     return obj, obj_for_action, relation_exists
 
 
-
 def add_recipe_to(self, request, submodel, serializer):
     EXISTS_MESSAGES = {
-        'Favorited':  'Рецепт  уже в избранном.',
+        'Favorited': 'Рецепт  уже в избранном.',
         'ShoppingCart': 'Рецепт уже в списке покупок.',
     }
 
     try:
         obj_for_add_id = self.kwargs.get('pk')
-        obj_for_add = Recipe.objects.get(
-        id=obj_for_add_id
-    )
-
+        obj_for_add = Recipe.objects.get(id=obj_for_add_id)
         obj, obj_for_add, relation_exists = preparation(
             self, request, submodel, obj_for_add)
 
@@ -45,9 +42,9 @@ def add_recipe_to(self, request, submodel, serializer):
                             headers=headers)
 
         return Response(EXISTS_MESSAGES[submodel.__name__],
-                            status=status.HTTP_400_BAD_REQUEST)
+                        status=status.HTTP_400_BAD_REQUEST)
 
-    except:
+    except ObjectDoesNotExist:
         raise ValidationError('Рецепта с таким id не существует.')
 
 
@@ -66,9 +63,9 @@ def remove_recipe_from(self, request, submodel):
     if relation_exists:
         obj.recipes.remove(obj_for_remove)
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
     return Response(NO_EXISTS_MESSAGES[submodel.__name__],
-                        status=status.HTTP_400_BAD_REQUEST)
+                    status=status.HTTP_400_BAD_REQUEST)
 
 
 def subscribe_action(self, request, submodel):
