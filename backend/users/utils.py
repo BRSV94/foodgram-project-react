@@ -29,6 +29,7 @@ def create_shopping_cart(request):
 
 
     body_text = ''
+    print(ingredients)
     for ingr, amount in ingredients:
         print(ingr, amount)
         body_text += f'{ingr} - {amount}\n'
