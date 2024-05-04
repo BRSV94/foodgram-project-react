@@ -5,7 +5,7 @@ from djoser.views import UserViewSet
 from recipes.filters import RecipeFilter
 from recipes.models import Ingredient, Recipe, Tag
 from recipes.permissions import IsAuthorOrReadOnly
-from recipes.utils import add_to_recipe, remove_from_recipe, subscribe_action
+from recipes.utils import add_recipe_to, remove_recipe_from, subscribe_action
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
@@ -16,7 +16,6 @@ from users.models import Favorited, ShoppingCart, UsersSubscribes
 from users.utils import create_shopping_cart
 
 from .serializers import (IngredientSerializer,
-                        #   RecipeSerializer,
                           RecipeReadSerializer,
                           RecipeWriteSerializer,
                           SubRecipeSerializer,
@@ -24,55 +23,14 @@ from .serializers import (IngredientSerializer,
                           TagSerializer)
 
 
-
-# def subscribe_action(self, request, submodel, serializer):
-#     obj_for_action_id = self.kwargs.get('id')
-#     if int(obj_for_action_id) == request.user.id:
-#         return Response('Нельзя подписаться на себя.',
-#                         status=status.HTTP_400_BAD_REQUEST)
-
-#     obj_for_action = get_object_or_404(User, id=obj_for_action_id)
-#     relation_exists = submodel.objects.filter(
-#         user=request.user,
-#         subscribes=obj_for_action
-#     ).exists()
-
-#     obj, create = submodel.objects.get_or_create(user=request.user)
-#     serializer = serializer
-#     if request.method == 'POST':
-#         if not relation_exists:
-#             obj.subscribes.add(obj_for_action)
-#             data = serializer(instance=obj_for_action).data
-#             serializer = serializer(
-#                 instance=obj_for_action,
-#                 data=data)
-#             serializer.is_valid(raise_exception=False)
-#             return Response(
-#                 serializer.data,
-#                 status=status.HTTP_201_CREATED,
-#             )
-
-#         return Response('Вы уже подписаны на данного пользователя.',
-#                         status=status.HTTP_400_BAD_REQUEST)
-
-#     if relation_exists:
-#         obj.subscribes.remove(obj_for_action)
-#         return Response(status=status.HTTP_204_NO_CONTENT)
-
-#     return Response('Вы не были подписаны на данного пользователя.',
-#                     status=status.HTTP_400_BAD_REQUEST)
-
-
 class CustomUserViewSet(UserViewSet):
 
     @action(
         detail=True,
         methods=['post'],
-        # methods=['post', 'delete'],
         permission_classes=(IsAuthenticated,)
     )
     def subscribe(self, request, *args, **kwargs):
-        # model = UsersSubscribes
         serializer = SubscribesSerializer
         obj, obj_for_action, relation_exists = subscribe_action(
             self, request, UsersSubscribes
@@ -95,8 +53,6 @@ class CustomUserViewSet(UserViewSet):
     
     @subscribe.mapping.delete
     def unsubscribe(self, request, *args, **kwargs):
-        # model = UsersSubscribes
-        # serializer = SubscribesSerializer
         obj, obj_for_action, relation_exists = subscribe_action(
             self, request, UsersSubscribes
         )
@@ -128,7 +84,6 @@ class CustomUserViewSet(UserViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    # serializer_class = RecipeSerializer
     filterset_class = RecipeFilter
     permission_classes = (IsAuthorOrReadOnly,)
 
@@ -157,28 +112,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=['post'],
-        # methods=['post', 'delete'],
         permission_classes=(IsAuthenticated,)
     )
     def favorite(self, request, *args, **kwargs):
-        return add_to_recipe(self, request, Favorited, SubRecipeSerializer)
+        return add_recipe_to(self, request, Favorited, SubRecipeSerializer)
     
     @favorite.mapping.delete
     def unfavorite(self, request, *args, **kwargs):
-        return remove_from_recipe(self, request, Favorited)
+        return remove_recipe_from(self, request, Favorited)
 
     @action(
         detail=True,
         methods=['post'],
-        # methods=['post', 'delete'],
         permission_classes=(IsAuthenticated,),
     )
     def shopping_cart(self, request, *args, **kwargs):
-        return add_to_recipe(self, request, ShoppingCart, SubRecipeSerializer)
+        return add_recipe_to(self, request, ShoppingCart, SubRecipeSerializer)
     
     @shopping_cart.mapping.delete
     def remove_with_shopping_cart(self, request, *args, **kwargs):
-        return remove_from_recipe(self, request, ShoppingCart)
+        return remove_recipe_from(self, request, ShoppingCart)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
