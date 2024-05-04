@@ -23,8 +23,9 @@ class UserSerializer(ModelSerializer):
         read_only_fields = ('id',)
 
     def get_is_subscribed(self, obj, *args, **kwargs):
-        # if not self.context.get('request'):
-        #     return True
+        if not self.context.get('request'):
+            # return True
+            return False
 
         current_user = self.context.get('request').user
         return UsersSubscribes.objects.filter(
