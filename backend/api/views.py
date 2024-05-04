@@ -5,11 +5,12 @@ from djoser.views import UserViewSet
 from recipes.filters import RecipeFilter
 from recipes.models import Ingredient, Recipe, Tag
 from recipes.permissions import IsAuthorOrReadOnly
-from recipes.utils import recipe_action, subscribe_action
-from rest_framework import viewsets
+from recipes.utils import add_to_recipe, remove_from_recipe, subscribe_action
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
+from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from users.models import Favorited, ShoppingCart, UsersSubscribes
 from users.utils import create_shopping_cart
@@ -72,14 +73,40 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscribe(self, request, *args, **kwargs):
         # model = UsersSubscribes
-        # serializer = SubscribesSerializer
-        return subscribe_action(self, request, UsersSubscribes, SubscribesSerializer)
+        serializer = SubscribesSerializer
+        obj, obj_for_action, relation_exists = subscribe_action(
+            self, request, UsersSubscribes
+        )
+
+        if not relation_exists:
+            obj.subscribes.add(obj_for_action)
+            data = serializer(instance=obj_for_action).data
+            serializer = serializer(
+                instance=obj_for_action,
+                data=data)
+            serializer.is_valid(raise_exception=False)
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED,
+            )
+
+        return Response('Вы уже подписаны на данного пользователя.',
+                        status=status.HTTP_400_BAD_REQUEST)
     
     @subscribe.mapping.delete
     def unsubscribe(self, request, *args, **kwargs):
         # model = UsersSubscribes
         # serializer = SubscribesSerializer
-        return subscribe_action(self, request, UsersSubscribes, SubscribesSerializer)
+        obj, obj_for_action, relation_exists = subscribe_action(
+            self, request, UsersSubscribes
+        )
+
+        if relation_exists:
+            obj.subscribes.remove(obj_for_action)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response('Вы не были подписаны на данного пользователя.',
+                    status=status.HTTP_400_BAD_REQUEST)
 
     @action(
         detail=False,
@@ -134,11 +161,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def favorite(self, request, *args, **kwargs):
-        return recipe_action(self, request, Favorited, SubRecipeSerializer)
+        return add_to_recipe(self, request, Favorited, SubRecipeSerializer)
     
     @favorite.mapping.delete
     def unfavorite(self, request, *args, **kwargs):
-        return recipe_action(self, request, Favorited, SubRecipeSerializer)
+        return remove_from_recipe(self, request, Favorited, SubRecipeSerializer)
 
     @action(
         detail=True,
@@ -147,11 +174,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,),
     )
     def shopping_cart(self, request, *args, **kwargs):
-        return recipe_action(self, request, ShoppingCart, SubRecipeSerializer)
+        return add_to_recipe(self, request, ShoppingCart, SubRecipeSerializer)
     
     @shopping_cart.mapping.delete
     def remove_with_shopping_cart(self, request, *args, **kwargs):
-        return recipe_action(self, request, ShoppingCart, SubRecipeSerializer)
+        return remove_from_recipe(self, request, ShoppingCart, SubRecipeSerializer)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
