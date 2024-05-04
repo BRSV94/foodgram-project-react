@@ -84,7 +84,7 @@ DJOSER = {
     },
     'PERMISSIONS': {
         'user_list': ['rest_framework.permissions.AllowAny'],
-        'user': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
+        'user': ['users.permissions.IsAuthenticatedOrNotMe'],
     },
     'HIDE_USERS': False,
 }
@@ -180,8 +180,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-EMAIL_MAX_LENGTH = 254
-USERS_FIELDS_MAX_LENGTH = 150
-RECIPES_MAX_LENGTH = 200
-MIN_POSITIVE_VALUE = 1
-MAX_POSITIVE_VALUE = 10000

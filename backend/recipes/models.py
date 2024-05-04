@@ -4,7 +4,7 @@ from django.core.validators import (MinValueValidator,
                                     RegexValidator)
 from django.db import models
 
-from foodgram.settings import (RECIPES_MAX_LENGTH,
+from foodgram.constants import (RECIPES_MAX_LENGTH,
                                MIN_POSITIVE_VALUE,
                                MAX_POSITIVE_VALUE)
 
