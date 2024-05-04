@@ -83,7 +83,6 @@ class Ingredient(models.Model):
         verbose_name = 'ингридиент'
         verbose_name_plural = 'Ингридиенты'
         ordering = ['name']
-        # unique_together = ('name', 'measurement_unit',)
         constraints = [
             models.UniqueConstraint(
                 fields=['name', 'measurement_unit'],

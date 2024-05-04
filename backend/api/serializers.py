@@ -60,8 +60,6 @@ class TagSerializer(ModelSerializer):
 
 
 class IngredientSerializer(ModelSerializer):
-    # measurement_unit = SerializerMethodField()
-    # measurement_unit = CharField(source='measurement_unit')
     measurement_unit = CharField()
 
     class Meta:
@@ -69,25 +67,6 @@ class IngredientSerializer(ModelSerializer):
         fields = ('id', 'name', 'measurement_unit',)
         read_only_fields = ('name', 'measurement_unit',)
 
-
-    # def get_measurement_unit(self, obj):
-    #     return str(obj.measurement_unit)
-
-
-# class IngredientInRecipeReadSerializer(ModelSerializer):
-#     id = IntegerField()
-#     amount = IntegerField()
-#     # name = SerializerMethodField()
-#     # measurement_unit = SerializerMethodField()
-#     name = CharField(source='ingredient__name')
-#     measurement_unit = CharField(
-#         source='ingredient__measurement_unit__measurement_unit'
-#     )
-
-#     class Meta:
-#         model = IngredientInRecipe
-#         fields = ('id', 'name', 'measurement_unit', 'amount')
-#         fields = ('name', 'measurement_unit',)
 
 class IngredientInRecipeReadSerializer(ModelSerializer):
     id = ReadOnlyField(source='ingredient.id') 
@@ -120,35 +99,6 @@ class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
             raise ValidationError(
                 "Кол-во ингредиента должно быть числом большим нуля.")
         return value
-
-
-# class IngredientInRecipeSerializer(ModelSerializer): # Зачем разделять? Разберись.
-#     # id = PrimaryKeyRelatedField(queryset=IngredientInRecipe.objects.all()) # А тут id какой модели?
-#     id = ReadOnlyField(source='ingredient.id') 
-#     amount = IntegerField()
-#     # name = SerializerMethodField()
-#     # measurement_unit = SerializerMethodField()
-#     name = ReadOnlyField(source='ingredient.name')
-#     measurement_unit = ReadOnlyField(
-#         source='ingredient.measurement_unit.measurement_unit'
-#     )
-
-#     class Meta:
-#         model = IngredientInRecipe
-#         fields = ('id', 'name', 'measurement_unit', 'amount')
-#         read_only_fields = ('name', 'measurement_unit',)
-
-    # def get_name(self, obj):
-    #     return obj.ingredient.name
-
-    # def get_measurement_unit(self, obj):
-    #     return obj.ingredient.measurement_unit.measurement_unit
-
-
-# class TagListField(PrimaryKeyRelatedField):
-#     def to_representation(self, value):
-#         return {'id': value.id, 'name': value.name,
-#                 'color': value.color, 'slug': value.slug}
 
 
 class RecipeReadSerializer(ModelSerializer):
@@ -186,23 +136,7 @@ class RecipeReadSerializer(ModelSerializer):
 
 
 class RecipeWriteSerializer(RecipeReadSerializer):
-    # tags = TagSerializer(many=True)
-    # author = UserSerializer(read_only=True)
     ingredients = IngredientInRecipeWriteSerializer(many=True)
-    # image = Base64ImageField()
-
-    # class Meta:
-    #     model = Recipe
-    #     fields = (
-    #         'id',
-    #         'tags',
-    #         'author',
-    #         'ingredients',
-    #         'name',
-    #         'image',
-    #         'text',
-    #         'cooking_time',
-    #     )
 
     def create(self, validated_data):
         recipe = recipe_create_or_update(
@@ -240,95 +174,6 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         return tags
 
 
-# class RecipeSerializer(ModelSerializer):
-#     # tags = TagListField(queryset=Tag.objects.all(), many=True)
-#     tags = TagSerializer(many=True, read_only=True)
-#     author = UserSerializer(read_only=True)
-#     ingredients = IngredientInRecipeSerializer(many=True)
-#     is_favorited = SerializerMethodField()
-#     is_in_shopping_cart = SerializerMethodField()
-#     image = Base64ImageField()
-
-#     class Meta:
-#         model = Recipe
-#         fields = (
-#             'id',
-#             'tags',
-#             'author',
-#             'ingredients',
-#             'is_favorited',
-#             'is_in_shopping_cart',
-#             'name',
-#             'image',
-#             'text',
-#             'cooking_time',
-#         )
-#         read_only_fields = (
-#             'id',
-#             'author',
-#             'is_favorited',
-#             'is_in_shopping_cart',
-#         )
-
-#     def create(self, validated_data):
-#         recipe = recipe_create_or_update(
-#             self,
-#             validated_data,
-#             None
-#         )
-#         return recipe
-
-#     def update(self, instance, validated_data):
-#         update_recipe = recipe_create_or_update(
-#             self,
-#             validated_data,
-#             instance
-#         )
-#         return update_recipe
-
-#     def get_is_favorited(self, obj):
-#         user = self.context['request'].user
-#         return (user.is_authenticated
-#                 and user.favorited.filter(recipes=obj).exists())
-
-#     def get_is_in_shopping_cart(self, obj):
-#         user = self.context['request'].user
-#         return (user.is_authenticated
-#                 and user.shopping_cart.filter(recipes=obj).exists())
-
-#     def validate_ingredients(self, ingredients):
-#         if not ingredients:
-#             raise ValidationError(
-#                 "Необходимо указать ингредиенты.")
-#         ing_ids = []
-#         for ingredient in ingredients:
-#             if not ingredient['id'] or not ingredient['amount']:
-#                 raise ValidationError(
-#                     "Некорректные данные ингредиентов.")
-#             if ingredient['id'] in ing_ids:
-#                 raise ValidationError(
-#                     "Ингредиенты не могут повторяться.")
-#             ing_ids.append(ingredient['id'])
-#             if not Ingredient.objects.filter(
-#                 id=ingredient['id']
-#             ).exists():
-#                 raise ValidationError(
-#                     "Ингредиента с таким id не существует.")
-#             if int(ingredient['amount']) < 1:
-#                 raise ValidationError(
-#                     "Кол-во ингредиента не может быть меньше, чем 1.")
-#         return ingredients
-
-#     def validate_tags(self, tags):
-#         if not tags:
-#             raise ValidationError(
-#                 "Необходимо указать тэги.")
-#         if tags and len(tags) != len(set(tags)):
-#             raise ValidationError(
-#                 "Тэги не могут повторяться.")
-#         return tags
-
-
 class SubRecipeSerializer(ModelSerializer):
     class Meta:
         model = Recipe
@@ -352,6 +197,3 @@ class SubscribesSerializer(UserSerializer):
                             'last_name', 'is_subscribed', 'recipes',
                             'recipes_count')
         depth = 1
-
-    # def get_recipes_count(self, obj):
-    #     return obj.recipes.count()

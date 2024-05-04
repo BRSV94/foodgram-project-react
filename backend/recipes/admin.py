@@ -1,10 +1,7 @@
 from django.contrib import admin
-from django.utils.html import format_html
 
-from api.fields import Hex2NameColor
 from .models import (Ingredient, IngredientInRecipe,
                      MeasurementUnit, Recipe, Tag)
-from .widgets import ColorPickerWidget
 
 
 class TagsInline(admin.TabularInline):
@@ -46,8 +43,6 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description='ингредиенты')
     def ingredients_list(self, obj):
-        # print(obj.instance.ingredients.all())
-        # print(obj.instance.ingredients)
         return ', '.join(
             [str(ingredient) for ingredient in obj.ingredients.all()]
         ) or None
