@@ -12,9 +12,9 @@ def preparation(self, request, submodel):
     print('LOL'*9)
     print(obj_for_action_id)
     try:
-        obj_for_action = Recipe.objects.filter(
+        obj_for_action = Recipe.objects.get(
             id=obj_for_action_id
-        ).first()
+        )
         print(obj_for_action)
 
         relation_exists = submodel.objects.filter(
