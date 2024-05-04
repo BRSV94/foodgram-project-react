@@ -27,6 +27,16 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         detail=True,
+        methods=['get'],
+        permission_classes=(IsAuthenticated,)
+    )
+    def me(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    @action(
+        detail=True,
         methods=['post'],
         permission_classes=(IsAuthenticated,)
     )
