@@ -165,7 +165,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     
     @favorite.mapping.delete
     def unfavorite(self, request, *args, **kwargs):
-        return remove_from_recipe(self, request, Favorited, SubRecipeSerializer)
+        return remove_from_recipe(self, request, Favorited)
 
     @action(
         detail=True,
@@ -178,7 +178,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     
     @shopping_cart.mapping.delete
     def remove_with_shopping_cart(self, request, *args, **kwargs):
-        return remove_from_recipe(self, request, ShoppingCart, SubRecipeSerializer)
+        return remove_from_recipe(self, request, ShoppingCart)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):

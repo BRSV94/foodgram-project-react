@@ -10,18 +10,24 @@ from users.models import User
 
 
 def preparation(self, request, submodel):
+    print('LOL1')
     obj_for_action_id = self.kwargs.get('pk')
+    print('LOL2')
     try:
+        print('LOL3')
         obj_for_action = Recipe.objects.filter(
             id=obj_for_action_id
         ).exists().first()
+        print('LOL4')
 
         relation_exists = submodel.objects.filter(
             user=request.user,
             recipes=obj_for_action
         ).exists()
+        print('LOL5')
 
         obj, create = submodel.objects.get_or_create(user=request.user)
+        print('LOL7')
         return obj, obj_for_action, relation_exists
 
     except:
