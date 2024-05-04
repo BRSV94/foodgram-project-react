@@ -9,10 +9,13 @@ from users.models import User
 
 def preparation(self, request, submodel):
     obj_for_action_id = self.kwargs.get('pk')
+    print('LOL'*9)
+    print(obj_for_action_id)
     try:
         obj_for_action = Recipe.objects.filter(
             id=obj_for_action_id
         ).first()
+        print(obj_for_action)
 
         relation_exists = submodel.objects.filter(
             user=request.user,
