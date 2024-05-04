@@ -33,8 +33,9 @@ def add_to_recipe(self, request, submodel, serializer):
         'Favorited':  'Рецепт  уже в избранном.',
         'ShoppingCart': 'Рецепт уже в списке покупок.',
     }
-
+    print("It's OK")
     obj, obj_for_add, relation_exists = preparation(self, request, submodel)
+    print('No fucking shit.')
 
     if not relation_exists:
         obj.recipes.add(obj_for_add)
