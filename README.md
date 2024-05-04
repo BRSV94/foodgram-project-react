@@ -79,7 +79,7 @@ ALLOWED_HOSTS = '127.0.0.1, localhost, you.host.name'
 
 Установите [docker](https://docs.docker.com/engine/install/)
 
-Перейдите в директорию в файлом [docker-compose.yml]
+Перейдите в директорию в файлом [docker-compose.yml](infra/)
 Запустите проект:
 ```bash
 docker compose up --build
@@ -88,14 +88,14 @@ docker compose up --build
 
 ## Стэк технологий
 
-* **Бэкэнд**: Django + gunicorn
+* **Бэкэнд**: Django, DRF, Gunicorn
 * **Фронтэнд**: React
 * **База данных**: PosgreSQL
-* **Статика**: nginх
+* **Статика**: Nginх
 
 
 ## Документация
-Документация доступна по ссылке `[site]/api/docs` после запуска проекта.
+Документация доступна по ссылке `{your.host.name}/api/docs` после запуска проекта.
 
 
 
