@@ -5,41 +5,20 @@ from .models import Ingredient, Recipe
 
 
 class RecipeFilter(FilterSet):
-    # tags = filters.ModelMultipleChoiceFilter(
-    #     field_name='tags__slug',
-    #     to_field_name='slug',
-    #     queryset=Tag.objects.all(),
-    # )
     tags = filters.AllValuesMultipleFilter(
         field_name='tags__slug',
     )
     is_favorited = filters.BooleanFilter(
-        # method='filter_is_favorited's
         method='filter_boolean_field',
-        # extra_param='favorites',
     )
     is_in_shopping_cart = filters.BooleanFilter(
-        # method='filter_is_in_shopping_cart'
         method='filter_boolean_field',
-        # extra_param='shopping_cart',
     )
 
     class Meta:
         model = Recipe
         fields = ('tags', 'author',)
 
-    # def filter_is_favorited(self, queryset, name, value):
-    #     user = self.request.user
-    #     if value and not user.is_anonymous:
-    #         return queryset.filter(favorites__user=user)
-    #     return queryset
-
-    # def filter_is_in_shopping_cart(self, queryset, name, value):
-    #     user = self.request.user
-    #     if value and not user.is_anonymous:
-    #         return queryset.filter(shopping_cart__user=user)
-    #     return queryset
-    
     def filter_boolean_field(self, queryset, name, value):
         user = self.request.user
         field_params = {
@@ -53,7 +32,6 @@ class RecipeFilter(FilterSet):
 
 
 class IngredientFilter(FilterSet):
-    # name = filters.CharFilter(lookup_expr='startswith')
     name = filters.CharFilter(lookup_expr='istartswith')
 
     class Meta:

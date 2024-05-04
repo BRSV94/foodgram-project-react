@@ -2,12 +2,12 @@ from django.contrib.auth.hashers import make_password
 
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from recipes.utils import recipe_create_or_update
-from rest_framework.serializers import ReadOnlyField  # ?
-from rest_framework.serializers import (CharField, IntegerField,
-                                        ListField,
+from rest_framework.serializers import ReadOnlyField
+from rest_framework.serializers import (CharField,
+                                        IntegerField,
                                         ModelSerializer,
-                                        PrimaryKeyRelatedField,
-                                        SerializerMethodField, ValidationError)
+                                        SerializerMethodField,
+                                        ValidationError)
 from users.models import User, UsersSubscribes
 
 from .fields import Base64ImageField, Hex2NameColor
