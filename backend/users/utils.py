@@ -11,8 +11,9 @@ def create_shopping_cart(request):
 
     ingredients = IngredientInRecipe.objects.filter(
         recipes__in_shopping_cart__user=request.user
-    ).annotate(total_amount=sum('amount')).values_list(
-        'ingredient', 'total_amount')
+    ).values_list('ingredient', 'amount')
+
+    # .annotate(total_amount=sum('amount'))
 
     # recipes = cart.recipes.all()
 
