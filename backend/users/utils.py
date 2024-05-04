@@ -6,16 +6,11 @@ from .models import ShoppingCart
 
 
 def create_shopping_cart(request):
-
-    user = request.user
-    cart = get_object_or_404(ShoppingCart, user=user)
-
     ingredients = IngredientInRecipe.objects.filter(
         recipes__in_shopping_cart__user=request.user
-    ).annotate(total_amount=Sum('amount')).values(
+    ).annotate(total_amount=Sum('amount')).values_list(
         'ingredient__name',
         'ingredient__measurement_unit',
-        'amount',
         'total_amount'
     )
 
@@ -35,10 +30,8 @@ def create_shopping_cart(request):
 
 
     body_text = ''
-    print(ingredients)
-    for ingr, amount in ingredients:
-        print(ingr, amount)
-        body_text += f'{ingr.name} - {amount}\n'
+    for name, measurement_unit, amount in ingredients:
+        body_text += f'{name} - {amount} {measurement_unit}\n'
     file = ('Cписок покупок пользователя '
             f'{user.first_name} {user.last_name}:\n\n'
             + body_text)
