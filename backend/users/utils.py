@@ -32,7 +32,7 @@ def create_shopping_cart(request):
     print(ingredients)
     for ingr, amount in ingredients:
         print(ingr, amount)
-        body_text += f'{ingr} - {amount}\n'
+        body_text += f'{ingr.name} - {amount}\n'
     file = ('Cписок покупок пользователя '
             f'{user.first_name} {user.last_name}:\n\n'
             + body_text)
