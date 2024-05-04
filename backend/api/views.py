@@ -31,7 +31,7 @@ class CustomUserViewSet(UserViewSet):
         permission_classes=(AllowAny,)
     )
     def me(self, request, *args, **kwargs):
-        instance = self.get_object()
+        instance = request.user
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
