@@ -1,4 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
+# from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password
 
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
@@ -46,14 +46,11 @@ class UserCreateSerializer(ModelSerializer):
 
 
 class TagSerializer(ModelSerializer):
-    id = PrimaryKeyRelatedField(queryset=Tag.objects.all())
     color = Hex2NameColor()
 
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug',)
-
-    
 
     # def to_internal_value(self, tag_id):
     #     try:
@@ -135,9 +132,8 @@ class RecipeReadSerializer(ModelSerializer):
 
 class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
-    # tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
-    #                               many=True)
-    # tags = ReadOnlyField(source='ingredient.name')
+    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
+                                  many=True)
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
@@ -198,9 +194,13 @@ class RecipeWriteSerializer(RecipeReadSerializer):
             instance
         )
         return update_recipe
-    
-    # def to_representation(self, instance):
-    #     return super().to_representation(instance)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        tags_ids = data.pop('tags')
+        tags = [TagSerializer(Tag.objects.get(id=id)) for id in tags_ids]
+        data['tags'] = tags
+        return data
 
 
 class SubRecipeSerializer(ModelSerializer):
