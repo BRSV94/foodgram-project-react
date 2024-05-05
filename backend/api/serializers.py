@@ -157,8 +157,6 @@ class RecipeWriteSerializer(RecipeReadSerializer):
     def recipe_create_or_update(self, validated_data, recipe):
         ingredients_data = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
-        print('lolo'*9)
-        print(tags_data)
 
         if not recipe:
             recipe = Recipe.objects.create(**validated_data)
