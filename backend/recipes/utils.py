@@ -81,27 +81,3 @@ def subscribe_action(self, request, submodel):
 
     obj, create = submodel.objects.get_or_create(user=request.user)
     return obj, obj_for_action, relation_exists
-
-
-def recipe_create_or_update(self, validated_data, recipe):
-    ingredients_data = validated_data.pop('ingredients')
-    tags_data = validated_data.pop('tags')
-
-    if not recipe:
-        recipe = Recipe.objects.create(**validated_data)
-
-    ingredients = []
-    for ingredient_data in ingredients_data:
-        ing_id = ingredient_data['id']
-        ing_amount = ingredient_data['amount']
-
-        ingredients.append(IngredientInRecipe(
-            ingredient_id=ing_id,
-            amount=ing_amount,
-        ))
-    ingredients.sort(key=lambda obj: obj.ingredient.name)
-
-    ingredients_objs = IngredientInRecipe.objects.bulk_create(ingredients)
-    recipe.ingredients.set(ingredients_objs)
-    recipe.tags.set(tags_data)
-    return recipe

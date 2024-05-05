@@ -4,7 +4,8 @@ from django.core.validators import (MinValueValidator,
                                     RegexValidator)
 from django.db import models
 
-from foodgram.constants import (RECIPES_MAX_LENGTH,
+from foodgram.constants import (COLOR_FIELDS_MAX_LENGTH,
+                                RECIPES_MAX_LENGTH,
                                 MIN_POSITIVE_VALUE,
                                 MAX_POSITIVE_VALUE)
 
@@ -13,12 +14,12 @@ User = get_user_model()
 
 class Tag(models.Model):
     name = models.CharField(
-        max_length=RECIPES_MAX_LENGTH,
+        # max_length=RECIPES_MAX_LENGTH,
         blank=False,
         verbose_name='Тэг',
     )
     color = models.CharField(
-        max_length=7,
+        max_length=COLOR_FIELDS_MAX_LENGTH,
         blank=False,
         null=True,
         verbose_name='Цвет',
@@ -127,7 +128,10 @@ class Recipe(models.Model):
         verbose_name='Тэги',
     )
     cooking_time = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(MIN_POSITIVE_VALUE)],
+        validators=[
+            MinValueValidator(MIN_POSITIVE_VALUE),
+            MaxValueValidator(MAX_POSITIVE_VALUE),
+        ],
         verbose_name='Время приготовления в мин.',
         null=False,
         help_text=('Время приготовления должно быть указано в минутах. '

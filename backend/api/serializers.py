@@ -2,7 +2,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password
 
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
-from recipes.utils import recipe_create_or_update
 from rest_framework.serializers import ReadOnlyField
 from rest_framework.serializers import (CharField,
                                         IntegerField,
@@ -95,11 +94,11 @@ class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
                 "Ингредиента с таким id не существует.")
         return value
 
-    def validate_amount(self, value):
-        if type(value) != int or value < 1:
-            raise ValidationError(
-                "Кол-во ингредиента должно быть числом большим нуля.")
-        return value
+    # def validate_amount(self, value):
+    #     if type(value) != int or value < 1:
+    #         raise ValidationError(
+    #             "Кол-во ингредиента должно быть числом большим нуля.")
+    #     return value
 
 
 class RecipeReadSerializer(ModelSerializer):
@@ -158,8 +157,31 @@ class RecipeWriteSerializer(RecipeReadSerializer):
                 "Тэги не могут повторяться.")
         return tags
 
+    def recipe_create_or_update(self, validated_data, recipe):
+        ingredients_data = validated_data.pop('ingredients')
+        tags_data = validated_data.pop('tags')
+
+        if not recipe:
+            recipe = Recipe.objects.create(**validated_data)
+
+        ingredients = []
+        for ingredient_data in ingredients_data:
+            ing_id = ingredient_data['id']
+            ing_amount = ingredient_data['amount']
+
+            ingredients.append(IngredientInRecipe(
+                ingredient_id=ing_id,
+                amount=ing_amount,
+            ))
+        ingredients.sort(key=lambda obj: obj.ingredient.name)
+
+        ingredients_objs = IngredientInRecipe.objects.bulk_create(ingredients)
+        recipe.ingredients.set(ingredients_objs)
+        recipe.tags.set(tags_data)
+        return recipe
+
     def create(self, validated_data):
-        recipe = recipe_create_or_update(
+        recipe = self.recipe_create_or_update(
             self,
             validated_data,
             None

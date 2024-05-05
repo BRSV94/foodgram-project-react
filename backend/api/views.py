@@ -1,20 +1,19 @@
 from django.http import HttpResponse
-from django.shortcuts import render
-
-from djoser.views import UserViewSet
-from recipes.filters import RecipeFilter
-from recipes.models import Ingredient, Recipe, Tag
-from recipes.permissions import IsAuthorOrReadOnly
-from recipes.utils import add_recipe_to, remove_recipe_from, subscribe_action
+from django.shortcuts import renderfrom
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
+from djoser.views import UserViewSet
+
+from recipes.filters import RecipeFilter
+from recipes.models import Ingredient, Recipe, Tag
+from recipes.permissions import IsAuthorOrReadOnly
+from recipes.utils import add_recipe_to, remove_recipe_from, subscribe_action
 from users.models import Favorited, ShoppingCart, UsersSubscribes
 from users.utils import create_shopping_cart
-
 from .serializers import (IngredientSerializer,
                           RecipeReadSerializer,
                           RecipeWriteSerializer,
