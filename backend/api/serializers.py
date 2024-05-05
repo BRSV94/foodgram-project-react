@@ -111,12 +111,6 @@ class RecipeReadSerializer(ModelSerializer):
         )
 
     def get_is_favorited(self, obj):
-
-        print('LOLLOLL'*9)
-        print(self.data)
-        print(obj)
-        raise KeyError('FUCKERROR')
-
         user = self.context['request'].user
         return (user.is_authenticated
                 and user.favorited.filter(recipes=obj).exists())
