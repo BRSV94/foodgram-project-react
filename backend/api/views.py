@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import renderfrom
+from django.shortcuts import render
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
