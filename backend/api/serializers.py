@@ -112,7 +112,6 @@ class RecipeReadSerializer(ModelSerializer):
 
     def get_is_favorited(self, obj):
         #################################
-        print(self)
         if not (user := self.data.pop('current_user', False)):
 
             print('lol'*9)
