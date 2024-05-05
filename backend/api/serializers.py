@@ -184,7 +184,6 @@ class RecipeWriteSerializer(RecipeReadSerializer):
     def create(self, validated_data):
         print('ВСЕ НОРМ 1')
         recipe = self.recipe_create_or_update(
-            self,
             validated_data,
             None
         )
@@ -195,7 +194,6 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         self.validate_tags(validated_data.get('tags'))
         self.validate_ingredients(validated_data.get('ingredients'))
         update_recipe = self.recipe_create_or_update(
-            self,
             validated_data,
             instance
         )
