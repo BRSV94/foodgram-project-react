@@ -46,11 +46,14 @@ class UserCreateSerializer(ModelSerializer):
 
 
 class TagSerializer(ModelSerializer):
+    id = PrimaryKeyRelatedField(queryset=Tag.objects.all())
     color = Hex2NameColor()
 
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug',)
+
+    
 
     # def to_internal_value(self, tag_id):
     #     try:
@@ -83,10 +86,6 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
 
 class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
     id = IntegerField()
-    tags = PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(),
-        many=True
-    )
 
     class Meta:
         model = IngredientInRecipe
@@ -138,6 +137,7 @@ class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
     # tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
     #                               many=True)
+    # tags = ReadOnlyField(source='ingredient.name')
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
@@ -161,6 +161,8 @@ class RecipeWriteSerializer(RecipeReadSerializer):
     def recipe_create_or_update(self, validated_data, recipe):
         ingredients_data = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
+        print('lolo'*9)
+        print(tags_data)
 
         if not recipe:
             recipe = Recipe.objects.create(**validated_data)
@@ -196,6 +198,9 @@ class RecipeWriteSerializer(RecipeReadSerializer):
             instance
         )
         return update_recipe
+    
+    # def to_representation(self, instance):
+    #     return super().to_representation(instance)
 
 
 class SubRecipeSerializer(ModelSerializer):
