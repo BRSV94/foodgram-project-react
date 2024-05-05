@@ -5,7 +5,7 @@ from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from rest_framework.serializers import (CharField,
                                         IntegerField,
                                         ModelSerializer,
-                                        # PrimaryKeyRelatedField,
+                                        PrimaryKeyRelatedField,
                                         ReadOnlyField,
                                         SerializerMethodField,
                                         ValidationError)
@@ -30,7 +30,6 @@ class UserSerializer(ModelSerializer):
         current_user = self.context.get('request').user
         return UsersSubscribes.objects.filter(
             user=current_user.id, subscribes=obj).exists()
-        # return current_user.subscribes.subscriber == obj
 
 
 class UserCreateSerializer(ModelSerializer):
@@ -53,12 +52,12 @@ class TagSerializer(ModelSerializer):
         model = Tag
         fields = ('id', 'name', 'color', 'slug',)
 
-    def to_internal_value(self, tag_id):
-        try:
-            return Tag.objects.get(id=tag_id)
-        except ObjectDoesNotExist:
-            raise ValidationError(
-                "Тэга с таким id не существует.")
+    # def to_internal_value(self, tag_id):
+    #     try:
+    #         return Tag.objects.get(id=tag_id)
+    #     except ObjectDoesNotExist:
+    #         raise ValidationError(
+    #             "Тэга с таким id не существует.")
 
 
 class IngredientSerializer(ModelSerializer):
@@ -84,6 +83,10 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
 
 class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
     id = IntegerField()
+    tags = PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True
+    )
 
     class Meta:
         model = IngredientInRecipe
@@ -95,12 +98,6 @@ class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
             raise ValidationError(
                 "Ингредиента с таким id не существует.")
         return value
-
-    # def validate_amount(self, value):
-    #     if type(value) != int or value < 1:
-    #         raise ValidationError(
-    #             "Кол-во ингредиента должно быть числом большим нуля.")
-    #     return value
 
 
 class RecipeReadSerializer(ModelSerializer):
