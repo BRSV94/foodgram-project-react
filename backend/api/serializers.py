@@ -1,10 +1,11 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password
 
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from rest_framework.serializers import (CharField,
                                         IntegerField,
                                         ModelSerializer,
-                                        PrimaryKeyRelatedField,
+                                        # PrimaryKeyRelatedField,
                                         ReadOnlyField,
                                         SerializerMethodField,
                                         ValidationError)
@@ -50,6 +51,15 @@ class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug',)
+
+    ####################################
+    def to_internal_value(self, tag_id):
+        try:
+            return Tag.objects.get(id=tag_id)
+        except ObjectDoesNotExist:
+            raise ValidationError(
+                "Тэга с таким id не существует.")
+
 
 class IngredientSerializer(ModelSerializer):
     measurement_unit = CharField()
@@ -123,8 +133,8 @@ class RecipeReadSerializer(ModelSerializer):
 
 class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
-    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
-                                  many=True)
+    # tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
+    #                               many=True)
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
@@ -184,11 +194,8 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         )
         return update_recipe
 
-    def to_representation(self, instance):
-        print('lOLO'*9)
-        print(self)
-        print(instance)
-        return RecipeReadSerializer(instance).data
+    # def to_representation(self, instance):
+    #     return RecipeReadSerializer(instance).data
 
 
 class SubRecipeSerializer(ModelSerializer):
