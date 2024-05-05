@@ -191,7 +191,7 @@ class RecipeWriteSerializer(RecipeReadSerializer):
     def update(self, instance, validated_data):
         self.validate_tags(validated_data.get('tags'))
         self.validate_ingredients(validated_data.get('ingredients'))
-        update_recipe = recipe_create_or_update(
+        update_recipe = self.recipe_create_or_update(
             self,
             validated_data,
             instance
