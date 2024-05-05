@@ -114,7 +114,7 @@ class RecipeReadSerializer(ModelSerializer):
 
         print('LOLLOLL'*9)
         print(self.data)
-        print(obj.data)
+        print(obj)
 
         user = self.context['request'].user
         return (user.is_authenticated
@@ -190,8 +190,8 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         return update_recipe
 
     def to_representation(self, instance):
-        data = RecipeReadSerializer(instance).data
-        data['current_user'] = self.context
+        # data = RecipeReadSerializer(instance).data
+        # data['current_user'] = self.context
         return RecipeReadSerializer(instance).data
 
 
