@@ -52,7 +52,8 @@ class TagSerializer(ModelSerializer):
         model = Tag
         fields = ('id', 'name', 'color', 'slug',)
 
-    # def to_internal_value(self, tag_id):
+    def to_internal_value(self, tag_id):
+        return Tag.objects.get(id=tag_id)
     #     try:
     #         return Tag.objects.get(id=tag_id)
     #     except ObjectDoesNotExist:
@@ -134,6 +135,7 @@ class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
     tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
                                   many=True)
+    tags_for_response = TagSerializer(many=True)
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
