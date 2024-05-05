@@ -14,7 +14,7 @@ User = get_user_model()
 
 class Tag(models.Model):
     name = models.CharField(
-        # max_length=RECIPES_MAX_LENGTH,
+        max_length=RECIPES_MAX_LENGTH,
         blank=False,
         verbose_name='Тэг',
     )
