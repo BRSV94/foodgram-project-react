@@ -194,6 +194,9 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         return update_recipe
 
     def to_representation(self, instance):
+        # tags = TagSerializer(many=True)
+        print('LOLO'*9)
+        print(instance)
         data = super().to_representation(instance)
         tags_ids = data.pop('tags')
         tags = [TagSerializer(Tag.objects.get(id=id)).data for id in tags_ids]
