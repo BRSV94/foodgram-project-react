@@ -133,9 +133,8 @@ class RecipeReadSerializer(ModelSerializer):
 
 class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
-    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
-                                  many=True)
-    tags_for_response = TagSerializer(many=True)
+    # tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
+    #                               many=True)
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
@@ -195,12 +194,12 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         )
         return update_recipe
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        tags_ids = data.pop('tags')
-        tags = [TagSerializer(Tag.objects.get(id=id)).data for id in tags_ids]
-        data['tags'] = tags
-        return data
+    # def to_representation(self, instance):
+    #     data = super().to_representation(instance)
+    #     tags_ids = data.pop('tags')
+    #     tags = [TagSerializer(Tag.objects.get(id=id)).data for id in tags_ids]
+    #     data['tags'] = tags
+    #     return data
 
 
 class SubRecipeSerializer(ModelSerializer):
