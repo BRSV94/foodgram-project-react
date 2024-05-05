@@ -115,6 +115,7 @@ class RecipeReadSerializer(ModelSerializer):
         print('LOLLOLL'*9)
         print(self.data)
         print(obj)
+        raise KeyError('FUCKERROR')
 
         user = self.context['request'].user
         return (user.is_authenticated
