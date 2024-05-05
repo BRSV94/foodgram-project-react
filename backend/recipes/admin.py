@@ -81,7 +81,7 @@ class IngredientsInRecipeAdmin(admin.ModelAdmin):
         'ingredient',
     )
     search_fields = (
-        'ingredient',
+        'ingredient__name',
     )
 
     @admin.display(description='Используется в:')
