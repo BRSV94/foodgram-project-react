@@ -2,10 +2,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password
 
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
-from rest_framework.serializers import ReadOnlyField
 from rest_framework.serializers import (CharField,
                                         IntegerField,
                                         ModelSerializer,
+                                        PrimaryKeyRelatedField,
+                                        ReadOnlyField,
                                         SerializerMethodField,
                                         ValidationError)
 from users.models import User, UsersSubscribes
@@ -29,6 +30,7 @@ class UserSerializer(ModelSerializer):
         current_user = self.context.get('request').user
         return UsersSubscribes.objects.filter(
             user=current_user.id, subscribes=obj).exists()
+        # return current_user.subscribes.subscriber == obj
 
 
 class UserCreateSerializer(ModelSerializer):
@@ -137,6 +139,8 @@ class RecipeReadSerializer(ModelSerializer):
 
 class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
+    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
+                                  many=True)
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
