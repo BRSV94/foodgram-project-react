@@ -116,12 +116,12 @@ class Recipe(models.Model):
     text = models.TextField(
         verbose_name='Описание',
     )
-    # ingredients = models.ManyToManyField(
-    #     'IngredientInRecipe',
-    #     related_name='recipes',
-    #     verbose_name='Ингредиенты',
-    #     blank=True,
-    # )
+    ingredients = models.ManyToManyField(
+        'IngredientInRecipe',
+        related_name='recipes',
+        verbose_name='Ингредиенты',
+        blank=True,
+    )
     tags = models.ManyToManyField(
         Tag,
         related_name='recipes',
@@ -152,11 +152,11 @@ class Recipe(models.Model):
 
 
 class IngredientInRecipe(models.Model):
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='ingredient_in_recipe',
-    )
+    # recipe = models.ForeignKey(
+    #     Recipe,
+    #     on_delete=models.CASCADE,
+    #     related_name='ingredient_in_recipe',
+    # )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
