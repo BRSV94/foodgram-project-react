@@ -5,7 +5,7 @@ from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from rest_framework.serializers import (CharField,
                                         IntegerField,
                                         ModelSerializer,
-                                        PrimaryKeyRelatedField,
+                                        # PrimaryKeyRelatedField,
                                         ReadOnlyField,
                                         SerializerMethodField,
                                         ValidationError)
@@ -139,8 +139,8 @@ class RecipeReadSerializer(ModelSerializer):
 
 class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
-    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
-                                  many=True)
+    # tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
+    #                               many=True)
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
@@ -177,7 +177,6 @@ class RecipeWriteSerializer(RecipeReadSerializer):
                 ingredient_id=ing_id,
                 amount=ing_amount,
             ))
-        print('ВСЕ НОРМ YJHV')
         ingredients.sort(key=lambda obj: obj.ingredient.name)
 
         ingredients_objs = IngredientInRecipe.objects.bulk_create(ingredients)
@@ -186,12 +185,10 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         return recipe
 
     def create(self, validated_data):
-        print('ВСЕ НОРМ 1')
         recipe = self.recipe_create_or_update(
             validated_data,
             None
         )
-        print('ВСЕ НОРМ 2')
         return recipe
 
     def update(self, instance, validated_data):
