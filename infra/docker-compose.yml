@@ -1,7 +1,7 @@
 version: '3.3'
 
 volumes:
-  psql_db:
+  psqldb:
   static:
   media:
 
@@ -10,7 +10,7 @@ services:
     image: postgres:13.10
     env_file: ../.env
     volumes:
-      - psql_db:/var/lib/postgresql/data
+      - psqldb:/var/lib/postgresql/data
   backend:
     build:
       context: ../backend
