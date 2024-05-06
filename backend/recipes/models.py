@@ -23,9 +23,10 @@ class Tag(models.Model):
         verbose_name='Цвет',
         validators=[
             RegexValidator(
-                regex='^#[0-9]{6}$',
+                regex='^#[A-Fa-f0-9]{6}$',
                 message=('Цвет должен быть указан в формате '
-                         '"#XXXXXX", где "X" - любая цифра.'),
+                         '"#XXXXXX", где "X" - любая цифра '
+                         'или буква латинского алфавита.'),
             ),
         ],
     )
