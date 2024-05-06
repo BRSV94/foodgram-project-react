@@ -1,11 +1,11 @@
-from django.core.exceptions import ObjectDoesNotExist
+# from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password
 
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
 from rest_framework.serializers import (CharField,
                                         IntegerField,
                                         ModelSerializer,
-                                        # PrimaryKeyRelatedField,
+                                        PrimaryKeyRelatedField,
                                         ReadOnlyField,
                                         SerializerMethodField,
                                         ValidationError)
@@ -53,12 +53,12 @@ class TagSerializer(ModelSerializer):
         fields = ('id', 'name', 'color', 'slug',)
 
     ####################################
-    def to_internal_value(self, tag_id):
-        try:
-            return Tag.objects.get(id=tag_id)
-        except ObjectDoesNotExist:
-            raise ValidationError(
-                "Тэга с таким id не существует.")
+    # def to_internal_value(self, tag_id):
+    #     try:
+    #         return Tag.objects.get(id=tag_id)
+    #     except ObjectDoesNotExist:
+    #         raise ValidationError(
+    #             "Тэга с таким id не существует.")
 
 
 class IngredientSerializer(ModelSerializer):
@@ -121,6 +121,7 @@ class RecipeReadSerializer(ModelSerializer):
         )
 
     def get_is_favorited(self, obj):
+
         user = self.context['request'].user
         return (user.is_authenticated
                 and user.favorited.filter(recipes=obj).exists())
@@ -133,8 +134,8 @@ class RecipeReadSerializer(ModelSerializer):
 
 class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
-    # tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
-    #                               many=True)
+    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
+                                  many=True)
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
@@ -194,8 +195,11 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         )
         return update_recipe
 
-    # def to_representation(self, instance):
-    #     return RecipeReadSerializer(instance).data
+    def to_representation(self, instance):
+        return RecipeReadSerializer(
+            instance=instance,
+            context=self.context
+        ).data
 
 
 class SubRecipeSerializer(ModelSerializer):
