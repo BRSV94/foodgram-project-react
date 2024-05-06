@@ -1,4 +1,3 @@
-# from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password
 
 from recipes.models import Ingredient, IngredientInRecipe, Recipe, Tag
@@ -51,14 +50,6 @@ class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name', 'color', 'slug',)
-
-    ####################################
-    # def to_internal_value(self, tag_id):
-    #     try:
-    #         return Tag.objects.get(id=tag_id)
-    #     except ObjectDoesNotExist:
-    #         raise ValidationError(
-    #             "Тэга с таким id не существует.")
 
 
 class IngredientSerializer(ModelSerializer):
