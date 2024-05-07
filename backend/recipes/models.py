@@ -159,6 +159,7 @@ class IngredientInRecipe(models.Model):
         # related_name='ingredients',
         related_name='ingredient_in_recipe',
         blank=True,
+        null=True,
     )
     ingredient = models.ForeignKey(
         Ingredient,
