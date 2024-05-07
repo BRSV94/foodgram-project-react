@@ -66,9 +66,11 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
 
     class Meta:
         model = IngredientInRecipe
-        fields = ('id', 'name', 'measurement_unit',
-                #    'amount'
-                   )
+        fields = ('id', 'name', 'measurement_unit', 'amount')
+        
+    def to_representation(self, instance):
+        print('LOLKEKEZZAAZA', instance)
+        return super().to_representation(instance)
 
 
 class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
@@ -169,10 +171,10 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         ingredients.sort(key=lambda obj: obj.ingredient.name)
 
         ingredients_objs = IngredientInRecipe.objects.bulk_create(ingredients)
-        # recipe.ingredients.set(ingredients_objs)
-        losos = list(map(lambda x: x.id, ingredients_objs))
-        print(losos)
-        recipe.ingredients.set(losos)###
+        recipe.ingredients.set(ingredients_objs)
+        # losos = list(map(lambda x: x.id, ingredients_objs))
+        # print(losos)
+        # recipe.ingredients.set(losos)###
         recipe.tags.set(tags_data)
         return recipe
 
