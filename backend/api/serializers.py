@@ -190,6 +190,9 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         return update_recipe
 
     def to_representation(self, instance):
+        print(instance.ingredients)
+        print(instance.tags)
+        print(instance)
         print(instance)
         print('IAIAIAIAIAIAIAAIIAIAIAIAIAIAIIAI')
         return RecipeReadSerializer(
