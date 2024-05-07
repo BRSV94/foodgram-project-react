@@ -68,9 +68,8 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
         model = IngredientInRecipe
         fields = ('id', 'name', 'measurement_unit', 'amount')
         
-    def to_representation(self, instance):
-        print('LOLKEKEZZAAZA', instance)
-        return super().to_representation(instance)
+    # def to_representation(self, instance):
+    #     return super().to_representation(instance)
 
 
 class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
@@ -91,7 +90,10 @@ class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
 class RecipeReadSerializer(ModelSerializer):
     tags = TagSerializer(many=True)
     author = UserSerializer(read_only=True)
-    ingredients = IngredientInRecipeReadSerializer(many=True)
+    ingredients = IngredientInRecipeReadSerializer(
+        queryset=IngredientInRecipe.objects.all(),
+        many=True,
+    )
     is_favorited = SerializerMethodField(read_only=True)
     is_in_shopping_cart = SerializerMethodField(read_only=True)
     image = Base64ImageField()
