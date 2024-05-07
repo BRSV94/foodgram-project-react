@@ -168,8 +168,8 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         ingredients.sort(key=lambda obj: obj.ingredient.name)
 
         ingredients_objs = IngredientInRecipe.objects.bulk_create(ingredients)
-        # recipe.ingredients.set(ingredients_objs)
-        recipe.ingredients.set(list(map(lambda x: x.id, ingredients_objs)))###
+        recipe.ingredients.add(ingredients_objs)
+        # recipe.ingredients.set(list(map(lambda x: x.id, ingredients_objs)))###
         recipe.tags.set(tags_data)
         return recipe
 
