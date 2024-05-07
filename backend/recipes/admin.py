@@ -36,13 +36,12 @@ class RecipeAdmin(admin.ModelAdmin):
     )
     filter_horizontal = (
         'tags',
-        'ingredients',
     )
     search_fields = (
         'name',
     )
     raw_id_fields = (
-        'ingredients_id',
+        'ingredients',
     )
 
     @admin.display(description='ингредиенты')
