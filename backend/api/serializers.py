@@ -192,9 +192,11 @@ class RecipeWriteSerializer(RecipeReadSerializer):
     def to_representation(self, instance):
         print(instance.ingredients)
         print(instance.tags)
-        print(instance)
-        print(instance)
         print('IAIAIAIAIAIAIAAIIAIAIAIAIAIAIIAI')
+        print(RecipeReadSerializer(
+            instance=instance,
+            context=self.context
+        ).data)
         return RecipeReadSerializer(
             instance=instance,
             context=self.context
