@@ -43,6 +43,9 @@ class RecipeAdmin(admin.ModelAdmin):
     raw_id_fields = (
         'ingredients',
     )
+    inlines = (
+        IngredientInRecipeInline,
+    )
 
     @admin.display(description='ингредиенты')
     def ingredients_list(self, obj):
