@@ -71,10 +71,6 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
 
 class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
     id = IntegerField()
-    # recipe = PrimaryKeyRelatedField(
-    #     queryset=Recipe.objects.all(),
-    #     write_only=True,
-    # )
 
     class Meta:
         model = IngredientInRecipe
@@ -196,8 +192,6 @@ class RecipeWriteSerializer(RecipeReadSerializer):
             instance=instance,
             context=self.context
         ).data
-    
-    # def to_internal_value(self, data):
 
 
 class SubRecipeSerializer(ModelSerializer):
