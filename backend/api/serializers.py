@@ -161,16 +161,16 @@ class RecipeWriteSerializer(RecipeReadSerializer):
             ing_amount = ingredient_data['amount']
 
             ingredients.append(IngredientInRecipe(
-                recipe_id=recipe.id,
+                # recipe_id=recipe.id,
                 ingredient_id=ing_id,
                 amount=ing_amount,
             ))
         ingredients.sort(key=lambda obj: obj.ingredient.name)
 
         ingredients_objs = IngredientInRecipe.objects.bulk_create(ingredients)
-        # recipe.ingredients.set(ingredients_objs) 
+        recipe.ingredients.set(ingredients_objs)
         # recipe.ingredients.set(list(map(lambda x: x.id, ingredients_objs)))###
-        # recipe.tags.set(tags_data)
+        recipe.tags.set(tags_data)
         return recipe
 
     def create(self, validated_data):
