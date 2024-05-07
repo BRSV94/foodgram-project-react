@@ -169,8 +169,8 @@ class RecipeWriteSerializer(RecipeReadSerializer):
 
         ingredients_objs = IngredientInRecipe.objects.bulk_create(ingredients)
         # recipe.ingredients.set(ingredients_objs) 
-        recipe.ingredients.set(list(map(lambda x: x.id, ingredients_objs)))###
-        recipe.tags.set(tags_data)
+        # recipe.ingredients.set(list(map(lambda x: x.id, ingredients_objs)))###
+        # recipe.tags.set(tags_data)
         return recipe
 
     def create(self, validated_data):
