@@ -156,6 +156,7 @@ class RecipeWriteSerializer(RecipeReadSerializer):
             ing_amount = ingredient_data['amount']
 
             ingredients.append(IngredientInRecipe(
+                recipe_id=recipe.id,
                 ingredient_id=ing_id,
                 amount=ing_amount,
             ))
