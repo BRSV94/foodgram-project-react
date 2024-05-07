@@ -125,7 +125,6 @@ class Recipe(models.Model):
         Tag,
         related_name='recipes',
         verbose_name='Тэги',
-        null=False,
     )
     cooking_time = models.PositiveSmallIntegerField(
         validators=[
