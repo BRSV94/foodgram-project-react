@@ -172,7 +172,7 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         # recipe.ingredients.set(ingredients_objs)
         losos = list(map(lambda x: x.id, ingredients_objs))
         print(losos)
-        recipe.ingredients.add(list(map(lambda x: x.id, losos)))###
+        recipe.ingredients.add(losos)###
         recipe.tags.set(tags_data)
         return recipe
 
