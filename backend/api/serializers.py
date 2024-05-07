@@ -63,11 +63,12 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
     measurement_unit = ReadOnlyField(
         source='ingredient.measurement_unit.measurement_unit'
     )
-    amount = IntegerField
 
     class Meta:
         model = IngredientInRecipe
-        fields = ('id', 'name', 'measurement_unit', 'amount')
+        fields = ('id', 'name', 'measurement_unit',
+                #    'amount'
+                   )
 
 
 class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
