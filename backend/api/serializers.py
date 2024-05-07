@@ -150,6 +150,9 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         if not recipe:
             recipe = Recipe.objects.create(**validated_data)
 
+        print('LOL'*90)
+        print(recipe.id)
+
         ingredients = []
         for ingredient_data in ingredients_data:
             ing_id = ingredient_data['id']
