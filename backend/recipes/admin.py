@@ -40,6 +40,9 @@ class RecipeAdmin(admin.ModelAdmin):
     search_fields = (
         'name',
     )
+    raw_id_fields = (
+        'ingredients',
+    )
 
     @admin.display(description='ингредиенты')
     def ingredients_list(self, obj):
