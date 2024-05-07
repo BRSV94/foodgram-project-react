@@ -71,10 +71,10 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
 
 class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
     id = IntegerField()
-    recipe = PrimaryKeyRelatedField(
-        queryset=Recipe.objects.all(),
-        write_only=True,
-    )
+    # recipe = PrimaryKeyRelatedField(
+    #     queryset=Recipe.objects.all(),
+    #     write_only=True,
+    # )
 
     class Meta:
         model = IngredientInRecipe
