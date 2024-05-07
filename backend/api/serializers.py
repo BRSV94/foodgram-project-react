@@ -169,7 +169,9 @@ class RecipeWriteSerializer(RecipeReadSerializer):
 
         ingredients_objs = IngredientInRecipe.objects.bulk_create(ingredients)
         # recipe.ingredients.set(ingredients_objs)
-        recipe.ingredients.add(list(map(lambda x: x.id, ingredients_objs)))###
+        losos = list(map(lambda x: x.id, ingredients_objs))
+        print(losos)
+        recipe.ingredients.add(list(map(lambda x: x.id, losos)))###
         recipe.tags.set(tags_data)
         return recipe
 
