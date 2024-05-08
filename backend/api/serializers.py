@@ -206,6 +206,9 @@ class RecipeWriteSerializer(RecipeReadSerializer):
             instance=instance,
             context=self.context
         ).data
+    
+    def to_internal_value(self, data):
+        return super().to_internal_value(data)
 
 
 class SubRecipeSerializer(ModelSerializer):
