@@ -127,18 +127,8 @@ class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
     tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
 
-    class Meta:
-        model = Recipe
-        fields = (
-            'tags',
-            'ingredients',
-            'name',
-            'image',
-            'text',
-            'cooking_time',
-        )
-
     def validate_ingredients(self, ingredients):
+        print('LOLOLOL'*99)
         if not ingredients:
             raise ValidationError(
                 "Необходимо указать ингредиенты.")
