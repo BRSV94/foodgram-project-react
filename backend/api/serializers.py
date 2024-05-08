@@ -90,7 +90,6 @@ class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
 class RecipeReadSerializer(ModelSerializer):
     tags = TagSerializer(many=True)
     author = UserSerializer(read_only=True)
-    # ingredients = IngredientInRecipeReadSerializer(many=True)
     ingredients = SerializerMethodField(read_only=True)
     is_favorited = SerializerMethodField(read_only=True)
     is_in_shopping_cart = SerializerMethodField(read_only=True)
@@ -129,11 +128,6 @@ class RecipeReadSerializer(ModelSerializer):
 
 class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
-    # ingredients = PrimaryKeyRelatedField(
-    #     queryset=IngredientInRecipe.objects.all(),
-    #     many=True,
-    #     write_only=True,
-    # )
     tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
                                   many=True)
 
@@ -157,8 +151,10 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         return tags
 
     def recipe_create_or_update(self, validated_data, recipe):
-        ingredients_data = validated_data.pop('ingredients')
-        tags_data = validated_data.pop('tags')
+        # ingredients_data = validated_data.pop('ingredients')
+        # tags_data = validated_data.pop('tags')
+        ingredients_data = validated_data.get('ingredients')
+        tags_data = validated_data.get('tags')
         print('Полуlol', ingredients_data)
 
         if not recipe:
@@ -179,7 +175,6 @@ class RecipeWriteSerializer(RecipeReadSerializer):
             ))
         ingredients.sort(key=lambda obj: obj.ingredient.name)
         IngredientInRecipe.objects.bulk_create(ingredients)
-        # recipe.ingredients.set(ingredients_objs)
         recipe.tags.set(tags_data)
         return recipe
 
@@ -194,7 +189,6 @@ class RecipeWriteSerializer(RecipeReadSerializer):
     def update(self, instance, validated_data):
         # self.validate_tags(validated_data.get('tags'))
         # self.validate_ingredients(validated_data.get('ingredients'))
-        self.is_valid(raise_exception=False)
         update_recipe = self.recipe_create_or_update(
             validated_data,
             instance
