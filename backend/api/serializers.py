@@ -117,7 +117,7 @@ class RecipeReadSerializer(ModelSerializer):
         user = self.context['request'].user
         return (user.is_authenticated
                 and user.shopping_cart.filter(recipes=obj).exists())
-    
+
     def get_ingredients(self, obj):
         ingredients = IngredientInRecipe.objects.filter(recipe_id=obj.id)
         return IngredientInRecipeReadSerializer(ingredients, many=True).data
