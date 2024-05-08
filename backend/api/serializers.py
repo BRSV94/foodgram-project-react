@@ -90,10 +90,8 @@ class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
 class RecipeReadSerializer(ModelSerializer):
     tags = TagSerializer(many=True)
     author = UserSerializer(read_only=True)
-    ingredients = IngredientInRecipeReadSerializer(
-        queryset=IngredientInRecipe.objects.all(),
-        many=True,
-    )
+    # ingredients = IngredientInRecipeReadSerializer(many=True)
+    ingredients = SerializerMethodField(read_only=True)
     is_favorited = SerializerMethodField(read_only=True)
     is_in_shopping_cart = SerializerMethodField(read_only=True)
     image = Base64ImageField()
@@ -123,10 +121,19 @@ class RecipeReadSerializer(ModelSerializer):
         user = self.context['request'].user
         return (user.is_authenticated
                 and user.shopping_cart.filter(recipes=obj).exists())
+    
+    def get_ingredients(self, obj):
+        ingredients = IngredientInRecipe.objects.filter(recipe_id=obj.id)
+        return IngredientInRecipeReadSerializer(ingredients, many=True).data
 
 
 class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
+    # ingredients = PrimaryKeyRelatedField(
+    #     queryset=IngredientInRecipe.objects.all(),
+    #     many=True,
+    #     write_only=True,
+    # )
     tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
                                   many=True)
 
