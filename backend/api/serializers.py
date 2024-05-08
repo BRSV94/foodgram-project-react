@@ -127,8 +127,21 @@ class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
     tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
 
+    def validate(self, attrs):
+        tags = attrs.get('tags')
+        ingredients = attrs.get('ingredients')
+
+        if not ingredients:
+            raise ValidationError(
+                {'Поле "ingredients" обязательное.'}
+            )
+        if not tags:
+            raise ValidationError(
+                {'Поле "tags" обязательное.'}
+            )
+        return super().validate(attrs)
+
     def validate_ingredients(self, ingredients):
-        print('LOLOLOL'*99)
         if not ingredients:
             raise ValidationError(
                 "Необходимо указать ингредиенты.")
