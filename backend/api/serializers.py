@@ -127,9 +127,14 @@ class RecipeReadSerializer(ModelSerializer):
 
 
 class RecipeWriteSerializer(RecipeReadSerializer):
-    ingredients = IngredientInRecipeWriteSerializer(many=True)
-    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(),
-                                  many=True)
+    ingredients = IngredientInRecipeWriteSerializer(
+        many=True,
+        required=True
+    )
+    tags = PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True, required=True
+    )
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
@@ -151,17 +156,11 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         return tags
 
     def recipe_create_or_update(self, validated_data, recipe):
-        # ingredients_data = validated_data.pop('ingredients')
-        # tags_data = validated_data.pop('tags')
-        ingredients_data = validated_data.get('ingredients')
-        tags_data = validated_data.get('tags')
-        print('Полуlol', ingredients_data)
+        ingredients_data = validated_data.pop('ingredients')
+        tags_data = validated_data.pop('tags')
 
         if not recipe:
             recipe = Recipe.objects.create(**validated_data)
-
-        print('LOL'*90)
-        print(recipe.id)
 
         ingredients = []
         for ingredient_data in ingredients_data:
