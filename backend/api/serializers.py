@@ -127,6 +127,17 @@ class RecipeWriteSerializer(RecipeReadSerializer):
     ingredients = IngredientInRecipeWriteSerializer(many=True)
     tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
 
+    class Meta:
+        model = Recipe
+        fields = (
+            'tags',
+            'ingredients',
+            'name',
+            'image',
+            'text',
+            'cooking_time',
+        )
+
     def validate_ingredients(self, ingredients):
         if not ingredients:
             raise ValidationError(
@@ -176,8 +187,8 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        self.validate_tags(validated_data.get('tags'))
-        self.validate_ingredients(validated_data.get('ingredients'))
+        # self.validate_tags(validated_data.get('tags'))
+        # self.validate_ingredients(validated_data.get('ingredients'))
         update_recipe = self.recipe_create_or_update(
             validated_data,
             instance
