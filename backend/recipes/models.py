@@ -115,9 +115,7 @@ class Recipe(models.Model):
     text = models.TextField(
         verbose_name='Описание',
     )
-    ###
     ingredients = models.ManyToManyField(
-        # 'IngredientInRecipe',
         Ingredient,
         related_name='recipes',
         verbose_name='Ингредиенты',
@@ -125,7 +123,6 @@ class Recipe(models.Model):
         through='IngredientInRecipe',
         through_fields=('recipe', 'ingredient'),
     )
-    ###
     tags = models.ManyToManyField(
         Tag,
         related_name='recipes',

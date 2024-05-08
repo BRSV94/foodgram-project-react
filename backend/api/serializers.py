@@ -67,9 +67,6 @@ class IngredientInRecipeReadSerializer(ModelSerializer):
     class Meta:
         model = IngredientInRecipe
         fields = ('id', 'name', 'measurement_unit', 'amount')
-        
-    # def to_representation(self, instance):
-    #     return super().to_representation(instance)
 
 
 class IngredientInRecipeWriteSerializer(IngredientInRecipeReadSerializer):
@@ -127,14 +124,8 @@ class RecipeReadSerializer(ModelSerializer):
 
 
 class RecipeWriteSerializer(RecipeReadSerializer):
-    ingredients = IngredientInRecipeWriteSerializer(
-        many=True,
-        required=True
-    )
-    tags = PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(),
-        many=True, required=True
-    )
+    ingredients = IngredientInRecipeWriteSerializer(many=True)
+    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
@@ -178,7 +169,6 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         return recipe
 
     def create(self, validated_data):
-        print('SUPERMEGALOL'*9)
         recipe = self.recipe_create_or_update(
             validated_data,
             None
@@ -186,8 +176,8 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        # self.validate_tags(validated_data.get('tags'))
-        # self.validate_ingredients(validated_data.get('ingredients'))
+        self.validate_tags(validated_data.get('tags'))
+        self.validate_ingredients(validated_data.get('ingredients'))
         update_recipe = self.recipe_create_or_update(
             validated_data,
             instance
