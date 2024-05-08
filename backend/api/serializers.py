@@ -178,12 +178,8 @@ class RecipeWriteSerializer(RecipeReadSerializer):
                 amount=ing_amount,
             ))
         ingredients.sort(key=lambda obj: obj.ingredient.name)
-
-        ingredients_objs = IngredientInRecipe.objects.bulk_create(ingredients)
+        IngredientInRecipe.objects.bulk_create(ingredients)
         # recipe.ingredients.set(ingredients_objs)
-        # losos = list(map(lambda x: x.id, ingredients_objs))
-        # print(losos)
-        # recipe.ingredients.set(losos)###
         recipe.tags.set(tags_data)
         return recipe
 
@@ -196,8 +192,8 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        self.validate_tags(validated_data.get('tags'))
-        self.validate_ingredients(validated_data.get('ingredients'))
+        # self.validate_tags(validated_data.get('tags'))
+        # self.validate_ingredients(validated_data.get('ingredients'))
         update_recipe = self.recipe_create_or_update(
             validated_data,
             instance
@@ -205,13 +201,6 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         return update_recipe
 
     def to_representation(self, instance):
-        print(instance.ingredients)
-        print(instance.tags)
-        print('IAIAIAIAIAIAIAAIIAIAIAIAIAIAIIAI')
-        print(RecipeReadSerializer(
-            instance=instance,
-            context=self.context
-        ).data)
         return RecipeReadSerializer(
             instance=instance,
             context=self.context
